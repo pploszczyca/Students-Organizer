@@ -1,7 +1,7 @@
-val Http4sVersion = "0.23.6"
+val Http4sVersion = "0.23.16"
 val MunitVersion = "0.7.29"
-val LogbackVersion = "1.2.6"
-val MunitCatsEffectVersion = "1.0.6"
+val LogbackVersion = "1.4.5"
+val MunitCatsEffectVersion = "1.0.7"
 
 lazy val root = (project in file("."))
   .settings(
@@ -17,6 +17,7 @@ lazy val root = (project in file("."))
       "org.scalameta"   %% "munit"               % MunitVersion           % Test,
       "org.typelevel"   %% "munit-cats-effect-3" % MunitCatsEffectVersion % Test,
       "ch.qos.logback"  %  "logback-classic"     % LogbackVersion,
+      // TODO: Add Skunk https://tpolecat.github.io/skunk/index.html
     ),
     testFrameworks += new TestFramework("munit.Framework")
   )
