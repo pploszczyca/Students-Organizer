@@ -1,17 +1,17 @@
 package com.pp.students_organizer_backend
 
 import cats.effect.{Async, Resource}
-import cats.syntax.all._
-import com.comcast.ip4s._
+import cats.syntax.all.*
+import com.comcast.ip4s.*
 import fs2.Stream
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder
-import org.http4s.implicits._
+import org.http4s.implicits.*
 import org.http4s.server.middleware.Logger
 
 object Students_organizer_backendServer:
 
-  def stream[F[_]: Async]: Stream[F, Nothing] = {
+  def stream[F[_] : Async]: Stream[F, Nothing] = {
     for {
       client <- Stream.resource(EmberClientBuilder.default[F].build)
       helloWorldAlg = HelloWorld.impl[F]
@@ -23,8 +23,8 @@ object Students_organizer_backendServer:
       // in the underlying routes.
       httpApp = (
         Students_organizer_backendRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
-        Students_organizer_backendRoutes.jokeRoutes[F](jokeAlg)
-      ).orNotFound
+          Students_organizer_backendRoutes.jokeRoutes[F](jokeAlg)
+        ).orNotFound
 
       // With Middlewares in place
       finalHttpApp = Logger.httpApp(true, true)(httpApp)
@@ -35,7 +35,7 @@ object Students_organizer_backendServer:
           .withPort(port"8080")
           .withHttpApp(finalHttpApp)
           .build >>
-        Resource.eval(Async[F].never)
+          Resource.eval(Async[F].never)
       )
     } yield exitCode
   }.drain

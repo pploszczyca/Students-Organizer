@@ -20,5 +20,3 @@ class AssignmentTypeService[F[_] : Concurrent](private val database: Resource[F,
     database.use { session =>
       session.execute(getAssignmentTypesQuery)
     }
-
-

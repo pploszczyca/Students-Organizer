@@ -8,4 +8,4 @@ case class AssignmentEntity(id: Long,
                             endDateTimestamp: Long,
                             tasks: List[TaskEntity] = List.empty,
                             materials: List[MaterialEntity] = List.empty,
-                     )
+                           )

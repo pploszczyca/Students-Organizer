@@ -4,4 +4,4 @@ case class TermEntity(id: Long,
                       number: Int,
                       year: String,
                       subjects: List[SubjectEntity],
-               )
+                     )

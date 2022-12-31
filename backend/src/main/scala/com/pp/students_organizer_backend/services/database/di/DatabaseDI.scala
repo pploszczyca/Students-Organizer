@@ -1,8 +1,8 @@
 package com.pp.students_organizer_backend.services.database.di
 
 import cats.effect.{IO, Resource}
-import skunk.Session
 import natchez.Trace.Implicits.noop
+import skunk.Session
 
 object DatabaseDI:
   private lazy val _sessionResource: Resource[IO, Session[IO]] =

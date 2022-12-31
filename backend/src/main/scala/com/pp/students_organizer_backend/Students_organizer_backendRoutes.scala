@@ -1,15 +1,15 @@
 package com.pp.students_organizer_backend
 
 import cats.effect.Sync
-import cats.implicits._
+import cats.implicits.*
 import org.http4s.HttpRoutes
 import org.http4s.dsl.Http4sDsl
 
 object Students_organizer_backendRoutes:
 
-  def jokeRoutes[F[_]: Sync](J: Jokes[F]): HttpRoutes[F] =
-    val dsl = new Http4sDsl[F]{}
-    import dsl._
+  def jokeRoutes[F[_] : Sync](J: Jokes[F]): HttpRoutes[F] =
+    val dsl = new Http4sDsl[F] {}
+    import dsl.*
     HttpRoutes.of[F] {
       case GET -> Root / "joke" =>
         for {
@@ -18,9 +18,9 @@ object Students_organizer_backendRoutes:
         } yield resp
     }
 
-  def helloWorldRoutes[F[_]: Sync](H: HelloWorld[F]): HttpRoutes[F] =
-    val dsl = new Http4sDsl[F]{}
-    import dsl._
+  def helloWorldRoutes[F[_] : Sync](H: HelloWorld[F]): HttpRoutes[F] =
+    val dsl = new Http4sDsl[F] {}
+    import dsl.*
     HttpRoutes.of[F] {
       case GET -> Root / "hello" / name =>
         for {

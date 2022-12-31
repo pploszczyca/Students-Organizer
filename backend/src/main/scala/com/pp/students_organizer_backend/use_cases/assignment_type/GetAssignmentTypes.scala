@@ -7,9 +7,9 @@ import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
 import com.pp.students_organizer_backend.services.database.AssignmentTypeService
 import com.pp.students_organizer_backend.services.database.models.AssignmentTypeModel.mapToAssignmentTypeEntity
 
-class GetAssignmentTypes[F[_] : Concurrent](private val assignmentTypeService: AssignmentTypeService[F]) 
+class GetAssignmentTypes[F[_] : Concurrent](private val assignmentTypeService: AssignmentTypeService[F])
   extends (() => F[List[AssignmentTypeEntity]]):
-  
+
   override def apply(): F[List[AssignmentTypeEntity]] =
     assignmentTypeService
       .getAssignmentTypes
