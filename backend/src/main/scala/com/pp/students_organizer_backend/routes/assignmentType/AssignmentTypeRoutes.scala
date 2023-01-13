@@ -14,31 +14,37 @@ import io.circe.syntax.*
 import io.circe.{Decoder, Encoder}
 import org.http4s.circe.{JsonDecoder, jsonEncoder, jsonEncoderOf, jsonOf, toMessageSyntax}
 import org.http4s.dsl.Http4sDsl
+import org.http4s.server.Router
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}
 
-class AssignmentTypeRoutes[F[_] :JsonDecoder : Sync](private val assignmentTypeService: AssignmentTypeService[F]) extends (() =>
-  HttpRoutes[F]),
-  Http4sDsl[F]:
+class AssignmentTypeRoutes[F[_] : JsonDecoder : Sync](private val assignmentTypeService: AssignmentTypeService[F])
+  extends (() => HttpRoutes[F]), Http4sDsl[F]:
   private val MAIN_ROUTE_PATH = "assignmentType"
 
-  override def apply(): HttpRoutes[F] =
+  private lazy val routes: HttpRoutes[F] =
     HttpRoutes.of[F] {
-      case GET -> Root / MAIN_ROUTE_PATH =>
+      case GET -> Root =>
         for {
           assignmentTypes <- assignmentTypeService.getAll
           response <- Ok(assignmentTypes.map(Mapper.toGetAssignmentTypeResponse).asJson)
         } yield response
 
-      case request @ POST -> Root / MAIN_ROUTE_PATH =>
+      case request@POST -> Root =>
         request
           .asJsonDecode[InsertAssignmentTypeRequest]
           .map(Mapper.toAssignmentType)
           .flatMap(assignmentTypeService.insert) *> Created()
 
-      case DELETE -> Root / MAIN_ROUTE_PATH / IntVar(assignmentTypeId) =>
+      case DELETE -> Root / IntVar(assignmentTypeId) =>
         assignmentTypeService
           .remove(assignmentTypeId) *> NoContent()
     }
+
+
+  override def apply(): HttpRoutes[F] =
+    Router(
+      MAIN_ROUTE_PATH -> routes
+    )
 
   private object Mapper:
     def toGetAssignmentTypeResponse(assignmentType: AssignmentTypeEntity): GetAssignmentTypeResponse =
