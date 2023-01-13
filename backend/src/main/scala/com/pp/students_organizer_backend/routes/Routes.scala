@@ -3,6 +3,7 @@ package com.pp.students_organizer_backend.routes
 import cats.effect.{Async, Resource}
 import com.pp.students_organizer_backend.routes.assignmentType.AssignmentTypeRoutes
 import com.pp.students_organizer_backend.services.{AssignmentTypeService, Services}
+import org.http4s.HttpRoutes
 import skunk.Session
 
 object Routes:
@@ -15,4 +16,4 @@ class Routes[F[_] : Async](services: Services[F]):
       assignmentTypeService = services.assignmentType,
     )
 
-  lazy val allRoutes: AssignmentTypeRoutes[F] = assignmentType
+  lazy val allRoutes: HttpRoutes[F] = assignmentType()

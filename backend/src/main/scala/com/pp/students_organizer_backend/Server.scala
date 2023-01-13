@@ -15,7 +15,7 @@ import org.http4s.server.middleware.Logger
 class Server[F[_] : Async](private val routes: Routes[F]):
   def stream: Stream[F, Nothing] = {
     val httpApp = routes
-      .allRoutes()
+      .allRoutes
       .orNotFound
     val finalHttpApp = Logger.httpApp(true, true)(httpApp)
 

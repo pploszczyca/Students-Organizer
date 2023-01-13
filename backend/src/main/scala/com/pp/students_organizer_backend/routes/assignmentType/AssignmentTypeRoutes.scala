@@ -14,23 +14,21 @@ import org.http4s.circe.{jsonEncoder, jsonEncoderOf, jsonOf}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}
 
-class AssignmentTypeRoutes[F[_] : Sync](private val assignmentTypeService: AssignmentTypeService[F]) extends (() => HttpRoutes[F]) {
+class AssignmentTypeRoutes[F[_] : Sync](private val assignmentTypeService: AssignmentTypeService[F]) extends (() => HttpRoutes[F]), Http4sDsl[F]:
   private val MAIN_ROUTE_PATH = "assignmentType"
 
   override def apply(): HttpRoutes[F] =
-    val dsl = new Http4sDsl[F] {}
-    import dsl.*
     HttpRoutes.of[F] {
       case GET -> Root / MAIN_ROUTE_PATH =>
         for {
-          assignmentTypes <- assignmentTypeService.getAssignmentTypes
-          response <- Ok(assignmentTypes.map(mapToGetAssignmentTypeResponse).asJson)
+          assignmentTypes <- assignmentTypeService.getAll
+          response <- Ok(assignmentTypes.map(Mapper.toGetAssignmentTypeResponse).asJson)
         } yield response
     }
 
-  private def mapToGetAssignmentTypeResponse(assignmentType: AssignmentTypeEntity): GetAssignmentTypeResponse =
-    GetAssignmentTypeResponse(
-      id = assignmentType.id,
-      name = assignmentType.name,
-    )
-}
+  private object Mapper:
+    def toGetAssignmentTypeResponse(assignmentType: AssignmentTypeEntity): GetAssignmentTypeResponse =
+      GetAssignmentTypeResponse(
+        id = assignmentType.id,
+        name = assignmentType.name,
+      )
