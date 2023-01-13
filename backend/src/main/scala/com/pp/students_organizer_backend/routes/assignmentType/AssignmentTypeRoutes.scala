@@ -6,16 +6,15 @@ import cats.syntax.all.toFunctorOps
 import cats.syntax.flatMap.toFlatMapOps
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
 import com.pp.students_organizer_backend.routes.assignmentType.models.GetAssignmentTypeResponse
-import com.pp.students_organizer_backend.use_cases.assignment_type.GetAssignmentTypes
+import com.pp.students_organizer_backend.services.AssignmentTypeService
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.{Decoder, Encoder}
-import org.http4s.circe.{jsonEncoderOf, jsonOf}
+import org.http4s.circe.{jsonEncoder, jsonEncoderOf, jsonOf}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}
-import org.http4s.circe.jsonEncoder
 
-class AssignmentTypeRoutes[F[_] : Sync](private val getAssignmentTypes: GetAssignmentTypes[F]) extends (() => HttpRoutes[F]) {
+class AssignmentTypeRoutes[F[_] : Sync](private val assignmentTypeService: AssignmentTypeService[F]) extends (() => HttpRoutes[F]) {
   private val MAIN_ROUTE_PATH = "assignmentType"
 
   override def apply(): HttpRoutes[F] =
@@ -24,7 +23,7 @@ class AssignmentTypeRoutes[F[_] : Sync](private val getAssignmentTypes: GetAssig
     HttpRoutes.of[F] {
       case GET -> Root / MAIN_ROUTE_PATH =>
         for {
-          assignmentTypes <- getAssignmentTypes()
+          assignmentTypes <- assignmentTypeService.getAssignmentTypes
           response <- Ok(assignmentTypes.map(mapToGetAssignmentTypeResponse).asJson)
         } yield response
     }
