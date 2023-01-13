@@ -45,9 +45,9 @@ object AssignmentTypeService:
         .gmap[AssignmentTypeEntity]
 
     val insertCommand: Command[AssignmentTypeEntity] =
-      sql"INSERT INTO assignment_type VALUES ($int4, $varchar)"
+      sql"INSERT INTO assignment_type (name) VALUES ($varchar)"
         .command
-        .gcontramap[AssignmentTypeEntity]
+        .contramap(assignmentType => assignmentType.name)
 
     val removeCommand: Command[Int] =
       sql"DELETE FROM assignment_type WHERE id=$int4"

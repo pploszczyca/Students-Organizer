@@ -1,0 +1,14 @@
+###
+GET localhost:8080/assignmentType
+Content-Type: application/json
+
+###
+POST localhost:8080/assignmentType
+Content-Type: application/json
+
+{
+  "name": "Exam"
+}
+###
+DELETE localhost:8080/assignmentType/4
+###
