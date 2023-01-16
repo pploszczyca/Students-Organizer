@@ -4,6 +4,8 @@ val LogbackVersion = "1.4.5"
 val MunitCatsEffectVersion = "1.0.7"
 val skunkVersion = "0.3.2"
 val circleVersion = "0.14.3"
+val scalaTestVersion = "3.2.15"
+val mockitoVersion = "3.2.15.0"
 
 lazy val root = (project in file("."))
   .settings(
@@ -22,6 +24,8 @@ lazy val root = (project in file("."))
       "org.tpolecat" %% "skunk-core" % skunkVersion,
       "io.circe" %% "circe-generic" % circleVersion,
       "io.circe" %% "circe-literal" % circleVersion,
+      "org.scalatest" %% "scalatest-flatspec" % scalaTestVersion % "test",
+      "org.scalatestplus" %% "mockito-4-6" % mockitoVersion % "test"
     ),
     testFrameworks += new TestFramework("munit.Framework")
   )
