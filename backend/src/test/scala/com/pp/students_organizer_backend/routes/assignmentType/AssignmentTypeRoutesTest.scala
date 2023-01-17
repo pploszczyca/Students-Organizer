@@ -13,6 +13,7 @@ import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.http4s.{Method, Request, Response, Status}
 import cats.effect.unsafe.implicits.global
+import com.pp.students_organizer_backend.test_utils.RoutesChecker
 import org.http4s.circe.jsonEncoder
 import io.circe.{Decoder, Encoder}
 import org.http4s.circe.CirceEntityDecoder.circeEntityDecoder
@@ -38,10 +39,12 @@ class AssignmentTypeRoutesTest extends AnyFlatSpec:
     val actualResponse = tested(assignmentTypeService = assignmentTypeService)()
       .orNotFound
       .run(Request(method = Method.GET, uri = uri"/assignmentType"))
-      .unsafeRunSync()
 
-    assert(actualResponse.status == Status.Ok)
-    assert(actualResponse.as[Json].unsafeRunSync() == expectedResponse)
+    RoutesChecker.check(
+      expectedStatus = Status.Ok,
+      expectedResponse = expectedResponse,
+      actualResponse = actualResponse,
+    )
   }
 
   private def tested(assignmentTypeService: AssignmentTypeService[IO] = mock[AssignmentTypeService[IO]]): AssignmentTypeRoutes[IO] =
