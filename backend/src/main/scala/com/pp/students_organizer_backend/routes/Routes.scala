@@ -7,13 +7,13 @@ import org.http4s.HttpRoutes
 import skunk.Session
 
 object Routes:
-  def make[F[_] : Async](services: Services[F]): Routes[F] =
+  def make[F[_]: Async](services: Services[F]): Routes[F] =
     Routes(services)
 
-class Routes[F[_] : Async](services: Services[F]):
+class Routes[F[_]: Async](services: Services[F]):
   lazy val assignmentType: AssignmentTypeRoutes[F] =
     AssignmentTypeRoutes[F](
-      assignmentTypeService = services.assignmentType,
+      assignmentTypeService = services.assignmentType
     )
 
   lazy val allRoutes: HttpRoutes[F] = assignmentType()

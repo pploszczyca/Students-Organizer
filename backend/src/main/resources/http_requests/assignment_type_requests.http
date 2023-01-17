@@ -9,6 +9,8 @@ Content-Type: application/json
 {
   "name": "Exam"
 }
+
 ###
 DELETE localhost:8080/assignmentType/5
+
 ###

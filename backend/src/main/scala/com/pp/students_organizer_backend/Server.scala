@@ -12,16 +12,15 @@ import org.http4s.ember.server.EmberServerBuilder
 import org.http4s.implicits.*
 import org.http4s.server.middleware.Logger
 
-class Server[F[_] : Async](private val routes: Routes[F]):
+class Server[F[_]: Async](private val routes: Routes[F]):
   def stream: Stream[F, Nothing] = {
-    val httpApp = routes
-      .allRoutes
-      .orNotFound
+    val httpApp = routes.allRoutes.orNotFound
     val finalHttpApp = Logger.httpApp(true, true)(httpApp)
 
     for {
       exitCode <- Stream.resource(
-        EmberServerBuilder.default[F]
+        EmberServerBuilder
+          .default[F]
           .withHost(ipv4"0.0.0.0")
           .withPort(port"8080")
           .withHttpApp(finalHttpApp)
@@ -30,4 +29,3 @@ class Server[F[_] : Async](private val routes: Routes[F]):
       )
     } yield exitCode
   }.drain
-

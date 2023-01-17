@@ -17,8 +17,10 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}
 
-class AssignmentTypeRoutes[F[_] : JsonDecoder : Sync](private val assignmentTypeService: AssignmentTypeService[F])
-  extends (() => HttpRoutes[F]), Http4sDsl[F]:
+class AssignmentTypeRoutes[F[_]: JsonDecoder: Sync](
+    private val assignmentTypeService: AssignmentTypeService[F]
+) extends (() => HttpRoutes[F]),
+      Http4sDsl[F]:
   private val MAIN_ROUTE_PATH = "assignmentType"
 
   private lazy val routes: HttpRoutes[F] =
@@ -26,10 +28,12 @@ class AssignmentTypeRoutes[F[_] : JsonDecoder : Sync](private val assignmentType
       case GET -> Root =>
         for {
           assignmentTypes <- assignmentTypeService.getAll
-          response <- Ok(assignmentTypes.map(Mapper.toGetAssignmentTypeResponse).asJson)
+          response <- Ok(
+            assignmentTypes.map(Mapper.toGetAssignmentTypeResponse).asJson
+          )
         } yield response
 
-      case request@POST -> Root =>
+      case request @ POST -> Root =>
         request
           .asJsonDecode[InsertAssignmentTypeRequest]
           .map(Mapper.toAssignmentType)
@@ -40,20 +44,23 @@ class AssignmentTypeRoutes[F[_] : JsonDecoder : Sync](private val assignmentType
           .remove(assignmentTypeId) *> NoContent()
     }
 
-
   override def apply(): HttpRoutes[F] =
     Router(
       MAIN_ROUTE_PATH -> routes
     )
 
   private object Mapper:
-    def toGetAssignmentTypeResponse(assignmentType: AssignmentTypeEntity): GetAssignmentTypeResponse =
+    def toGetAssignmentTypeResponse(
+        assignmentType: AssignmentTypeEntity
+    ): GetAssignmentTypeResponse =
       GetAssignmentTypeResponse(
         id = assignmentType.id,
-        name = assignmentType.name,
+        name = assignmentType.name
       )
 
-    def toAssignmentType(insertAssignmentTypeRequest: InsertAssignmentTypeRequest): AssignmentTypeEntity =
+    def toAssignmentType(
+        insertAssignmentTypeRequest: InsertAssignmentTypeRequest
+    ): AssignmentTypeEntity =
       AssignmentTypeEntity(
-        insertAssignmentTypeRequest.name,
+        insertAssignmentTypeRequest.name
       )

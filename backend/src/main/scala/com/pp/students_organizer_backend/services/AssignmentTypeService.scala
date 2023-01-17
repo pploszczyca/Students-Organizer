@@ -15,7 +15,9 @@ trait AssignmentTypeService[F[_]]:
   def remove(assignmentTypeId: Int): F[Unit]
 
 object AssignmentTypeService:
-  def make[F[_] : Concurrent](database: Resource[F, Session[F]]): AssignmentTypeService[F] =
+  def make[F[_]: Concurrent](
+      database: Resource[F, Session[F]]
+  ): AssignmentTypeService[F] =
     new AssignmentTypeService[F]:
       override def getAll: F[List[AssignmentTypeEntity]] =
         database.use { session =>
@@ -45,10 +47,8 @@ object AssignmentTypeService:
         .gmap[AssignmentTypeEntity]
 
     val insertCommand: Command[AssignmentTypeEntity] =
-      sql"INSERT INTO assignment_type (name) VALUES ($varchar)"
-        .command
+      sql"INSERT INTO assignment_type (name) VALUES ($varchar)".command
         .contramap(assignmentType => assignmentType.name)
 
     val removeCommand: Command[Int] =
-      sql"DELETE FROM assignment_type WHERE id=$int4"
-        .command
+      sql"DELETE FROM assignment_type WHERE id=$int4".command
