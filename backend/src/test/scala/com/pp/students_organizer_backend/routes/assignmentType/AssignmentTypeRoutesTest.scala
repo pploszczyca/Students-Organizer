@@ -3,6 +3,7 @@ package com.pp.students_organizer_backend.routes.assignmentType
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
+import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
 import com.pp.students_organizer_backend.test_utils.RoutesChecker
@@ -18,25 +19,20 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 
 class AssignmentTypeRoutesTest extends AnyFlatSpec:
-  private val assignmentTypeService = mock[AssignmentTypeService[IO]]
+  private val gateway = mock[AssignmentTypeRoutesGateway[IO]]
 
   "GET -> /assignmentType" should "return response" in {
-    val id = 42
-    val name = "name"
-    val assignmentType = AssignmentTypeEntity(
-      id = id,
-      name = name
-    )
     val assignmentTypeResponse = GetAssignmentTypeResponse(
-      id = id,
-      name = name
+      id = 42,
+      name = "name"
     )
     val expectedResponse = List(assignmentTypeResponse).asJson
 
-    when(assignmentTypeService.getAll) thenReturn IO(List(assignmentType))
+    when(gateway.getAll) thenReturn IO(List(assignmentTypeResponse))
 
-    val actualResponse = tested(assignmentTypeService = assignmentTypeService)().orNotFound
-      .run(Request(method = Method.GET, uri = uri"/assignmentType"))
+    val actualResponse =
+      tested(gateway = gateway)().orNotFound
+        .run(Request(method = Method.GET, uri = uri"/assignmentType"))
 
     RoutesChecker.check(
       expectedStatus = Status.Ok,
@@ -46,6 +42,7 @@ class AssignmentTypeRoutesTest extends AnyFlatSpec:
   }
 
   private def tested(
-      assignmentTypeService: AssignmentTypeService[IO] = mock[AssignmentTypeService[IO]]
+      gateway: AssignmentTypeRoutesGateway[IO] =
+        mock[AssignmentTypeRoutesGateway[IO]]
   ): AssignmentTypeRoutes[IO] =
-    AssignmentTypeRoutes(assignmentTypeService)
+    AssignmentTypeRoutes(gateway)

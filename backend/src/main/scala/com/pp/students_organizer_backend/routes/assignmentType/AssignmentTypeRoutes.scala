@@ -46,19 +46,3 @@ class AssignmentTypeRoutes[F[_]: JsonDecoder: Sync](
     Router(
       MAIN_ROUTE_PATH -> routes
     )
-
-  private object Mapper:
-    def toGetAssignmentTypeResponse(
-        assignmentType: AssignmentTypeEntity
-    ): GetAssignmentTypeResponse =
-      GetAssignmentTypeResponse(
-        id = assignmentType.id,
-        name = assignmentType.name
-      )
-
-    def toAssignmentType(
-        insertAssignmentTypeRequest: InsertAssignmentTypeRequest
-    ): AssignmentTypeEntity =
-      AssignmentTypeEntity(
-        insertAssignmentTypeRequest.name
-      )
