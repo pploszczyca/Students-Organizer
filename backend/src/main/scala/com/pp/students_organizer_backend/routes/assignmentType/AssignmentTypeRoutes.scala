@@ -6,6 +6,7 @@ import cats.implicits.catsSyntaxApply
 import cats.syntax.all.toFunctorOps
 import cats.syntax.flatMap.toFlatMapOps
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
+import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
@@ -18,7 +19,7 @@ import org.http4s.server.Router
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}
 
 class AssignmentTypeRoutes[F[_]: JsonDecoder: Sync](
-    private val assignmentTypeService: AssignmentTypeService[F]
+    private val gateway: AssignmentTypeRoutesGateway[F]
 ) extends (() => HttpRoutes[F]),
       Http4sDsl[F]:
   private val MAIN_ROUTE_PATH = "assignmentType"
@@ -27,20 +28,17 @@ class AssignmentTypeRoutes[F[_]: JsonDecoder: Sync](
     HttpRoutes.of[F] {
       case GET -> Root =>
         for {
-          assignmentTypes <- assignmentTypeService.getAll
-          response <- Ok(
-            assignmentTypes.map(Mapper.toGetAssignmentTypeResponse).asJson
-          )
+          getAssignmentTypeResponses <- gateway.getAll
+          response <- Ok(getAssignmentTypeResponses.asJson)
         } yield response
 
       case request @ POST -> Root =>
         request
           .asJsonDecode[InsertAssignmentTypeRequest]
-          .map(Mapper.toAssignmentType)
-          .flatMap(assignmentTypeService.insert) *> Created()
+          .flatMap(gateway.insert) *> Created()
 
       case DELETE -> Root / IntVar(assignmentTypeId) =>
-        assignmentTypeService
+        gateway
           .remove(assignmentTypeId) *> NoContent()
     }
 
