@@ -11,15 +11,26 @@ import org.http4s.{Response, Status}
 import org.scalatest.Assertions
 
 object RoutesChecker extends Assertions:
-  def check(expectedStatus: Status, expectedResponse: Json, actualResponse: IO[Response[IO]]): Unit = {
+  def check(
+      expectedStatus: Status,
+      expectedResponse: Json,
+      actualResponse: IO[Response[IO]]
+  ): Unit = {
     val response = actualResponse.unsafeRunSync()
     checkStatus(response, expectedStatus)
     checkBodyResponse(response, expectedResponse)
   }
-  private def checkStatus(response: Response[IO], expectedStatus: Status): Unit = {
+  
+  def checkStatus(
+      response: Response[IO],
+      expectedStatus: Status
+  ): Unit = {
     assert(response.status == expectedStatus)
   }
 
-  private def checkBodyResponse(response: Response[IO], expectedResponse: Json): Unit = {
+  private def checkBodyResponse(
+      response: Response[IO],
+      expectedResponse: Json
+  ): Unit = {
     assert(response.as[Json].unsafeRunSync() == expectedResponse)
   }
