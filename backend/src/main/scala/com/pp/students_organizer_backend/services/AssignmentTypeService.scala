@@ -8,6 +8,7 @@ import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
 import skunk.codec.all.{int4, varchar}
 import skunk.implicits.{sql, toIdOps}
 import skunk.{Command, Encoder, Query, Session, Void}
+import cats.syntax.all.toFlatMapOps
 
 trait AssignmentTypeService[F[_]]:
   def getAll: F[List[AssignmentTypeEntity]]
@@ -28,7 +29,7 @@ object AssignmentTypeService:
         database.use { session =>
           session
             .prepare(ServiceSQL.insertCommand)
-            .use(_.execute(assignmentType))
+            .flatMap(_.execute(assignmentType))
             .void
         }
 
@@ -36,7 +37,7 @@ object AssignmentTypeService:
         database.use { session =>
           session
             .prepare(ServiceSQL.removeCommand)
-            .use(_.execute(assignmentTypeId))
+            .flatMap(_.execute(assignmentTypeId))
             .void
         }
 
