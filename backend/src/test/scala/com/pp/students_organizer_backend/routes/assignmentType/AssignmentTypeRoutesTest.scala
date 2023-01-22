@@ -32,7 +32,13 @@ class AssignmentTypeRoutesTest extends AnyFlatSpec:
       id = 42,
       name = "name"
     )
-    val expectedResponse = List(assignmentTypeResponse).asJson
+    val expectedResponse =
+      json"""[
+         {
+          "id": 42,
+          "name": "name"
+         }
+      ]"""
 
     when(gateway.getAll) thenReturn IO(List(assignmentTypeResponse))
 
