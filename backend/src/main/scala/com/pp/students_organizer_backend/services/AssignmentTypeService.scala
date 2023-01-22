@@ -7,7 +7,7 @@ import cats.implicits.toFunctorOps
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
 import skunk.codec.all.{int4, varchar}
 import skunk.implicits.{sql, toIdOps}
-import skunk.{Command, Encoder, Query, Session, Void}
+import skunk.{Command, Query, Session, Void}
 import cats.syntax.all.toFlatMapOps
 
 trait AssignmentTypeService[F[_]]:

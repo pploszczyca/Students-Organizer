@@ -12,3 +12,6 @@ object Services {
 class Services[F[_]: Concurrent](database: Resource[F, Session[F]]):
   lazy val assignmentType: AssignmentTypeService[F] =
     AssignmentTypeService.make(database)
+
+  lazy val material: MaterialService[F] =
+    MaterialService.make(database)
