@@ -11,7 +11,7 @@ import org.mockito.Mockito.{verify, when}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 
-class MaterialGatewayTest extends AnyFlatSpec:
+class MaterialRoutesGatewayTest extends AnyFlatSpec:
   private val materialService: MaterialService[IO] = mock
 
   "ON getAll" should "return all all materials as response" in {
@@ -29,31 +29,31 @@ class MaterialGatewayTest extends AnyFlatSpec:
 
     assert(actual == expected)
   }
-  
+
   "ON insert" should "insert new material" in {
     val request = mock[InsertMaterialRequest]
     val material = mock[MaterialEntity]
-    val mapToAssignmentType = (* : InsertMaterialRequest) => material
-    
+    val mapToMaterial = (* : InsertMaterialRequest) => material
+
     when(materialService.insert(any())) thenReturn IO.unit
-    
+
     tested(
       materialService = materialService,
-      mapToAssignmentType = mapToAssignmentType,
+      mapToMaterial = mapToMaterial
     ).insert(request).unsafeRunSync()
-    
+
     verify(materialService).insert(material)
   }
-  
+
   "ON remove" should "remove material" in {
     val materialId = 99
-    
+
     when(materialService.remove(any())) thenReturn IO.unit
-    
+
     tested(
       materialService = materialService
     ).remove(materialId).unsafeRunSync()
-    
+
     verify(materialService).remove(materialId)
   }
 
@@ -61,11 +61,11 @@ class MaterialGatewayTest extends AnyFlatSpec:
       materialService: MaterialService[IO] = mock,
       mapToGetMaterialResponse: MaterialEntity => GetMaterialResponse =
         (* : MaterialEntity) => mock,
-      mapToAssignmentType: InsertMaterialRequest => MaterialEntity =
+      mapToMaterial: InsertMaterialRequest => MaterialEntity =
         (* : InsertMaterialRequest) => mock
-  ): MaterialGateway[IO] =
-    MaterialGateway.make(
+  ): MaterialRoutesGateway[IO] =
+    MaterialRoutesGateway.make(
       materialService = materialService,
       mapToGetMaterialResponse = mapToGetMaterialResponse,
-      mapToAssignmentType = mapToAssignmentType
+      mapToMaterial = mapToMaterial
     )

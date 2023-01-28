@@ -7,26 +7,25 @@ import com.pp.students_organizer_backend.routes.material.models.request.InsertMa
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
 
-trait MaterialGateway[F[_]]:
+trait MaterialRoutesGateway[F[_]]:
   def getAll: F[List[GetMaterialResponse]]
   def insert(request: InsertMaterialRequest): F[Unit]
   def remove(materialId: Int): F[Unit]
 
-object MaterialGateway:
+object MaterialRoutesGateway:
   def make[F[_]: Sync](
       materialService: MaterialService[F],
       mapToGetMaterialResponse: MaterialEntity => GetMaterialResponse,
-      mapToAssignmentType: InsertMaterialRequest => MaterialEntity
-  ): MaterialGateway[F] =
-    new MaterialGateway[F]:
+      mapToMaterial: InsertMaterialRequest => MaterialEntity
+  ): MaterialRoutesGateway[F] =
+    new MaterialRoutesGateway[F]:
       override def getAll: F[List[GetMaterialResponse]] =
-        materialService
-          .getAll
+        materialService.getAll
           .map(_.map(mapToGetMaterialResponse))
 
       override def insert(request: InsertMaterialRequest): F[Unit] =
         materialService
-          .insert(mapToAssignmentType(request))
+          .insert(mapToMaterial(request))
 
       override def remove(materialId: Int): F[Unit] =
         materialService

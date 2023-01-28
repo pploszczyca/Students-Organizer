@@ -2,10 +2,9 @@ package com.pp.students_organizer_backend.gateways
 
 import cats.effect.Async
 import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
-import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{
-  AssignmentTypeEntityMapper,
-  GetAssignmentTypeResponseMapper
-}
+import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{AssignmentTypeEntityMapper, GetAssignmentTypeResponseMapper}
+import com.pp.students_organizer_backend.gateways.material.MaterialRoutesGateway
+import com.pp.students_organizer_backend.gateways.material.mappers.{GetMaterialResponseMapper, MaterialEntityMapper}
 import com.pp.students_organizer_backend.services.Services
 
 object Gateways:
@@ -18,4 +17,11 @@ class Gateways[F[_]: Async](services: Services[F]):
       assignmentTypeService = services.assignmentType,
       mapToGetAssignmentTypeResponse = GetAssignmentTypeResponseMapper(),
       mapToAssignmentType = AssignmentTypeEntityMapper(),
+    )
+
+  lazy val materialRoutes: MaterialRoutesGateway[F] =
+    MaterialRoutesGateway.make[F](
+      materialService = services.material,
+      mapToGetMaterialResponse = GetMaterialResponseMapper.map,
+      mapToMaterial = MaterialEntityMapper.map
     )

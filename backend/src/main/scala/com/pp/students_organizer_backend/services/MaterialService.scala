@@ -6,7 +6,7 @@ import cats.syntax.all.{toFlatMapOps, toFunctorOps}
 import com.pp.students_organizer_backend.domain.MaterialEntity
 import skunk.codec.all.{int4, varchar}
 import skunk.implicits.sql
-import skunk.{Command, Query, Session, Void}
+import skunk.{Command, Query, Session, Void, ~}
 
 trait MaterialService[F[_]]:
   def getAll: F[List[MaterialEntity]]
@@ -43,7 +43,7 @@ object MaterialService:
     val getAllQuery: Query[Void, MaterialEntity] =
       sql"SELECT id, name, url FROM material"
         .query(int4 ~ varchar ~ varchar)
-        .gmap[MaterialEntity]
+        .map { case id ~ name ~ url => MaterialEntity(Option(id), name, url) }
 
     val insertCommand: Command[MaterialEntity] =
       sql"INSERT INTO material (name, url) VALUES ($varchar, $varchar)".command
