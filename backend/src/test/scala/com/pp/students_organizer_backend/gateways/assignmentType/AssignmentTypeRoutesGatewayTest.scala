@@ -3,7 +3,6 @@ package com.pp.students_organizer_backend.gateways.assignmentType
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
-import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{AssignmentTypeEntityMapper, GetAssignmentTypeResponseMapper}
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
@@ -15,7 +14,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
   private val assignmentTypeService: AssignmentTypeService[IO] = mock
 
-  "ON getAll" should "return get all assignment types as response" in {
+  "ON getAll" should "return all assignment types as response" in {
     val assignmentType = mock[AssignmentTypeEntity]
     val response = mock[GetAssignmentTypeResponse]
     val mapToGetAssignmentTypeResponse = (* : AssignmentTypeEntity) => response
@@ -50,7 +49,7 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
   "ON remove" should "remove assignment type" in {
     val assignmentTypeId = 99
 
-    when(assignmentTypeService.insert(any())) thenReturn IO.unit
+    when(assignmentTypeService.remove(any())) thenReturn IO.unit
 
     tested(
       assignmentTypeService = assignmentTypeService,

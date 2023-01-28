@@ -1,7 +1,7 @@
 package com.pp.students_organizer_backend.domain
 
 case class MaterialEntity(
-    id: Int,
+    id: Option[Int] = Option.empty,
     name: String,
     url: String
 )
