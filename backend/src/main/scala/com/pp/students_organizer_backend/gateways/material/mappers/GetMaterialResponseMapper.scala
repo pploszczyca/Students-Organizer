@@ -6,8 +6,8 @@ import com.pp.students_organizer_backend.routes.material.models.response.GetMate
 object GetMaterialResponseMapper {
   def map(material: MaterialEntity): GetMaterialResponse =
     GetMaterialResponse(
-      id = material.id.get,
-      name = material.name,
-      url = material.url,
+      id = material.id.value,
+      name = material.name.value,
+      url = material.url.value,
     )
 }

@@ -1,0 +1,7 @@
+POST localhost:8080/material
+Content-Type: application/json
+
+{
+  "name": "New Material",
+  "url": "https://www.google.pl/"
+}

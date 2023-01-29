@@ -4,7 +4,7 @@ import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.{toFlatMapOps, toFunctorOps}
 import com.pp.students_organizer_backend.domain.MaterialEntity
-import skunk.codec.all.{int4, varchar}
+import skunk.codec.all.{int4, uuid, varchar}
 import skunk.implicits.sql
 import skunk.{Command, Query, Session, Void, ~}
 
@@ -42,12 +42,12 @@ object MaterialService:
   private object ServiceSQL:
     val getAllQuery: Query[Void, MaterialEntity] =
       sql"SELECT id, name, url FROM material"
-        .query(int4 ~ varchar ~ varchar)
-        .map { case id ~ name ~ url => MaterialEntity(Option(id), name, url) }
+        .query(uuid ~ varchar ~ varchar)
+        .map { case id ~ name ~ url => MaterialEntity.create(id, name, url).getOrElse(MaterialEntity.empty()) }
 
     val insertCommand: Command[MaterialEntity] =
-      sql"INSERT INTO material (name, url) VALUES ($varchar, $varchar)".command
-        .contramap(material => (material.name, material.url))
+      sql"INSERT INTO material (id, name, url) VALUES ($uuid, $varchar, $varchar)".command
+        .contramap(material => ((material.id.value, material.name.value), material.url.value))
 
     val removeCommand: Command[Int] =
       sql"DELETE FROM material WHERE id=%$int4".command
