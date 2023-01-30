@@ -11,5 +11,6 @@ object Database:
       port = 5432,
       user = "postgres",
       database = "postgres",
-      password = Some("password")
+      password = Some("password"),
+      debug = true,
     )

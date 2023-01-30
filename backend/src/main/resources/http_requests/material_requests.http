@@ -5,3 +5,6 @@ Content-Type: application/json
   "name": "New Material",
   "url": "https://www.google.pl/"
 }
+
+###
+DELETE localhost:8080/material/a395780e-7642-479f-8aed-3c410ee6b177

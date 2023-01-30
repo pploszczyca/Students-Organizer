@@ -8,10 +8,12 @@ import com.pp.students_organizer_backend.routes.material.models.request.InsertMa
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
 
+import java.util.UUID
+
 trait MaterialRoutesGateway[F[_]]:
   def getAll: F[List[GetMaterialResponse]]
   def insert(request: InsertMaterialRequest): Either[ValidationError, F[Unit]]
-  def remove(materialId: Int): F[Unit]
+  def remove(materialId: UUID): F[Unit]
 
 object MaterialRoutesGateway:
   def make[F[_]: Sync](
@@ -28,6 +30,6 @@ object MaterialRoutesGateway:
         mapToMaterial(request)
           .map(materialService.insert)
 
-      override def remove(materialId: Int): F[Unit] =
+      override def remove(materialId: UUID): F[Unit] =
         materialService
           .remove(materialId)

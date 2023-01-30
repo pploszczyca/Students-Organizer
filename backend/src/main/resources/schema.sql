@@ -6,7 +6,7 @@ create table public.assignment_type
 
 create table public.material
 (
-    id   UUID NOT NULL PRIMARY KEY,
+    id   UUID    NOT NULL PRIMARY KEY,
     name VARCHAR NOT NULL,
     url  VARCHAR
 );

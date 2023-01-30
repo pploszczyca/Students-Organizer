@@ -7,11 +7,14 @@ import com.pp.students_organizer_backend.domain.MaterialEntity
 import skunk.codec.all.{int4, uuid, varchar}
 import skunk.implicits.sql
 import skunk.{Command, Query, Session, Void, ~}
+import skunk.implicits.toIdOps
+
+import java.util.UUID
 
 trait MaterialService[F[_]]:
   def getAll: F[List[MaterialEntity]]
   def insert(material: MaterialEntity): F[Unit]
-  def remove(materialId: Int): F[Unit]
+  def remove(materialId: UUID): F[Unit]
 
 object MaterialService:
   def make[F[_]: Concurrent](
@@ -31,7 +34,7 @@ object MaterialService:
             .void
         }
 
-      override def remove(materialId: Int): F[Unit] =
+      override def remove(materialId: UUID): F[Unit] =
         database.use { session =>
           session
             .prepare(ServiceSQL.removeCommand)
@@ -49,5 +52,5 @@ object MaterialService:
       sql"INSERT INTO material (id, name, url) VALUES ($uuid, $varchar, $varchar)".command
         .contramap(material => ((material.id.value, material.name.value), material.url.value))
 
-    val removeCommand: Command[Int] =
-      sql"DELETE FROM material WHERE id=%$int4".command
+    val removeCommand: Command[UUID] =
+      sql"DELETE FROM material WHERE id=$uuid".command
