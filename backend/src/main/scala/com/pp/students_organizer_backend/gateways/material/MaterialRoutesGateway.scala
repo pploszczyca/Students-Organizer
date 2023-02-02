@@ -12,7 +12,7 @@ import java.util.UUID
 
 trait MaterialRoutesGateway[F[_]]:
   def getAll: F[List[GetMaterialResponse]]
-  def insert(request: InsertMaterialRequest): Either[ValidationError, F[Unit]]
+  def insert(request: InsertMaterialRequest): F[Unit]
   def remove(materialId: UUID): F[Unit]
 
 object MaterialRoutesGateway:
@@ -26,9 +26,9 @@ object MaterialRoutesGateway:
         materialService.getAll
           .map(_.map(mapToGetMaterialResponse))
 
-      override def insert(request: InsertMaterialRequest): Either[ValidationError, F[Unit]] =
-        mapToMaterial(request)
-          .map(materialService.insert)
+      override def insert(request: InsertMaterialRequest): F[Unit] =
+        mapToMaterial(request) match
+          case Right(value) => materialService.insert(value)
 
       override def remove(materialId: UUID): F[Unit] =
         materialService

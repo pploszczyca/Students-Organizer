@@ -34,11 +34,11 @@ class MaterialRoutes[F[_]: JsonDecoder: Sync](
       case request @ POST -> Root =>
         request
           .asJsonDecode[InsertMaterialRequest]
-          .map(gateway.insert)
-          .flatMap {
-            case Left(error) => BadRequest(error.asJson)
-            case Right(_) => Created()
-          }
+          .flatMap(gateway.insert) *> Created()
+//          .flatMap {
+//            case Left(error) => BadRequest(error.asJson)
+//            case Right(_) => Created()
+//          }
 
       case DELETE -> Root / UUIDVar(materialId) =>
         gateway

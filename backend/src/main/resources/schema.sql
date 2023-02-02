@@ -8,5 +8,5 @@ create table public.material
 (
     id   UUID    NOT NULL PRIMARY KEY,
     name VARCHAR NOT NULL,
-    url  VARCHAR
+    url  VARCHAR NOT NULL
 );

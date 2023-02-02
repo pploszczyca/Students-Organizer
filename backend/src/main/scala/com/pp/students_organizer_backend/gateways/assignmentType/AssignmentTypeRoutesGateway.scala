@@ -7,12 +7,13 @@ import com.pp.students_organizer_backend.domain.common.ValidationError
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
+import cats.syntax.all.catsSyntaxApplicativeId
 
 import java.util.UUID
 
 trait AssignmentTypeRoutesGateway[F[_]]:
   def getAll: F[List[GetAssignmentTypeResponse]]
-  def insert(insertAssignmentTypeRequest: InsertAssignmentTypeRequest): Either[ValidationError, F[Unit]]
+  def insert(insertAssignmentTypeRequest: InsertAssignmentTypeRequest): F[Unit]
   def remove(assignmentTypeId: UUID): F[Unit]
 
 object AssignmentTypeRoutesGateway:
@@ -31,9 +32,13 @@ object AssignmentTypeRoutesGateway:
 
       override def insert(
           insertAssignmentTypeRequest: InsertAssignmentTypeRequest
-      ): Either[ValidationError, F[Unit]] =
-        mapToAssignmentType(insertAssignmentTypeRequest)
-          .map(assignmentTypeService.insert)
+      ): F[Unit] =
+        mapToAssignmentType(insertAssignmentTypeRequest) match
+          case Right(value) => assignmentTypeService.insert(value)
+//
+//        mapToAssignmentType(insertAssignmentTypeRequest)
+//          .map(assignmentTypeService.insert)
+//          .getOrElse(F.empty)
 
 
       override def remove(assignmentTypeId: UUID): F[Unit] =

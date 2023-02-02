@@ -51,7 +51,7 @@ object MaterialService:
         .gmap[MaterialEntity]
 
     val insertCommand: Command[MaterialEntity] =
-      sql"INSERT INTO material (id, name, url) VALUES ($materialId $materialName, $materialUrl)".command
+      sql"INSERT INTO material (id, name, url) VALUES ($materialId, $materialName, $materialUrl)".command
         .gcontramap[MaterialEntity]
 
     val removeCommand: Command[UUID] =

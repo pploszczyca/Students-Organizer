@@ -35,11 +35,11 @@ class AssignmentTypeRoutes[F[_]: JsonDecoder: Sync](
       case request @ POST -> Root =>
         request
           .asJsonDecode[InsertAssignmentTypeRequest]
-          .map(gateway.insert)
-          .flatMap {
-            case Left(error) => BadRequest(error.asJson)
-            case Right(_) => Created()
-          }
+          .flatMap(gateway.insert) *> Created()
+//          .flatMap {
+//            case Left(error) => BadRequest(error.asJson)
+//            case Right(_) => Created()
+//          }
 
       case DELETE -> Root / UUIDVar(assignmentTypeId) =>
         gateway
