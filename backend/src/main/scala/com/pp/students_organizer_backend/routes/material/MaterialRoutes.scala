@@ -4,7 +4,7 @@ import cats.effect.Sync
 import cats.implicits.catsSyntaxApply
 import cats.syntax.all.{catsSyntaxApplicativeError, toFunctorOps}
 import cats.syntax.flatMap.toFlatMapOps
-import com.pp.students_organizer_backend.domain.common.BadArgumentsError
+import com.pp.students_organizer_backend.domain.errors.ValidationException
 import com.pp.students_organizer_backend.gateways.material.MaterialRoutesGateway
 import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
 import io.circe.generic.auto.*
@@ -33,7 +33,7 @@ class MaterialRoutes[F[_]: JsonDecoder: Sync](
             gateway.insert(request) *> Created()
           }
           .handleErrorWith {
-            case BadArgumentsError(value) => BadRequest(value.asJson)
+            case ValidationException(value) => BadRequest(value.asJson)
           }
 
       case DELETE -> Root / UUIDVar(materialId) =>

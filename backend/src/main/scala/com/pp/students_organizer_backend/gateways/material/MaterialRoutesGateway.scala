@@ -3,7 +3,7 @@ package com.pp.students_organizer_backend.gateways.material
 import cats.effect.kernel.Sync
 import cats.syntax.all.toFunctorOps
 import com.pp.students_organizer_backend.domain.MaterialEntity
-import com.pp.students_organizer_backend.domain.common.{BadArgumentsError, ValidationError}
+import com.pp.students_organizer_backend.domain.errors.{ValidationException, ValidationError}
 import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
@@ -29,7 +29,7 @@ object MaterialRoutesGateway:
       override def insert(request: InsertMaterialRequest): F[Unit] =
         mapToMaterial(request) match
           case Right(value) => materialService.insert(value)
-          case Left(value) => throw BadArgumentsError(value.errorMessage)
+          case Left(value) => throw ValidationException(value.errorMessage)
 
       override def remove(materialId: UUID): F[Unit] =
         materialService

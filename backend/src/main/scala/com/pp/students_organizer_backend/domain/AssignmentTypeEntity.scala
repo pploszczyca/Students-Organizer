@@ -1,6 +1,6 @@
 package com.pp.students_organizer_backend.domain
 
-import com.pp.students_organizer_backend.domain.common.ValidationError
+import com.pp.students_organizer_backend.domain.errors.ValidationError
 
 import java.util.UUID
 

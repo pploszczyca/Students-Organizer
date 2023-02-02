@@ -3,7 +3,7 @@ package com.pp.students_organizer_backend.gateways.material
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.MaterialEntity
-import com.pp.students_organizer_backend.domain.common.ValidationError
+import com.pp.students_organizer_backend.domain.errors.ValidationError
 import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
