@@ -3,9 +3,10 @@ package com.pp.students_organizer_backend.routes.assignmentType
 import cats.effect.kernel.Concurrent
 import cats.effect.{Concurrent, Sync}
 import cats.implicits.catsSyntaxApply
-import cats.syntax.all.toFunctorOps
+import cats.syntax.all.{catsSyntaxApplicativeError, toFunctorOps}
 import cats.syntax.flatMap.toFlatMapOps
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
+import com.pp.students_organizer_backend.domain.errors.ValidationException
 import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
@@ -13,7 +14,13 @@ import com.pp.students_organizer_backend.services.AssignmentTypeService
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.{Decoder, Encoder}
-import org.http4s.circe.{JsonDecoder, jsonEncoder, jsonEncoderOf, jsonOf, toMessageSyntax}
+import org.http4s.circe.{
+  JsonDecoder,
+  jsonEncoder,
+  jsonEncoderOf,
+  jsonOf,
+  toMessageSyntax
+}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}
@@ -35,11 +42,12 @@ class AssignmentTypeRoutes[F[_]: JsonDecoder: Sync](
       case request @ POST -> Root =>
         request
           .asJsonDecode[InsertAssignmentTypeRequest]
-          .flatMap(gateway.insert) *> Created()
-//          .flatMap {
-//            case Left(error) => BadRequest(error.asJson)
-//            case Right(_) => Created()
-//          }
+          .flatMap { request =>
+            gateway.insert(request) *> Created()
+          }
+          .handleErrorWith { case ValidationException(value) =>
+            BadRequest(value.asJson)
+          }
 
       case DELETE -> Root / UUIDVar(assignmentTypeId) =>
         gateway

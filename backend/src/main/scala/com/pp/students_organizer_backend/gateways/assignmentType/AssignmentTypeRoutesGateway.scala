@@ -3,7 +3,7 @@ package com.pp.students_organizer_backend.gateways.assignmentType
 import cats.effect.Sync
 import cats.syntax.all.toFunctorOps
 import com.pp.students_organizer_backend.domain.{AssignmentTypeEntity, AssignmentTypeId}
-import com.pp.students_organizer_backend.domain.errors.ValidationError
+import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
@@ -35,11 +35,7 @@ object AssignmentTypeRoutesGateway:
       ): F[Unit] =
         mapToAssignmentType(insertAssignmentTypeRequest) match
           case Right(value) => assignmentTypeService.insert(value)
-//
-//        mapToAssignmentType(insertAssignmentTypeRequest)
-//          .map(assignmentTypeService.insert)
-//          .getOrElse(F.empty)
-
+          case Left(ValidationError(message)) => throw ValidationException(message)
 
       override def remove(assignmentTypeId: UUID): F[Unit] =
         assignmentTypeService

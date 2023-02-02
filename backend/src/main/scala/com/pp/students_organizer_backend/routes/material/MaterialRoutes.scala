@@ -10,7 +10,13 @@ import com.pp.students_organizer_backend.routes.material.models.request.InsertMa
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.http4s.HttpRoutes
-import org.http4s.circe.{JsonDecoder, jsonEncoder, jsonEncoderOf, jsonOf, toMessageSyntax}
+import org.http4s.circe.{
+  JsonDecoder,
+  jsonEncoder,
+  jsonEncoderOf,
+  jsonOf,
+  toMessageSyntax
+}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
@@ -32,8 +38,8 @@ class MaterialRoutes[F[_]: JsonDecoder: Sync](
           .flatMap { request =>
             gateway.insert(request) *> Created()
           }
-          .handleErrorWith {
-            case ValidationException(value) => BadRequest(value.asJson)
+          .handleErrorWith { case ValidationException(value) =>
+            BadRequest(value.asJson)
           }
 
       case DELETE -> Root / UUIDVar(materialId) =>

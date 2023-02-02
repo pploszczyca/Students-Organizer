@@ -3,19 +3,17 @@ package com.pp.students_organizer_backend.services
 import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.{toFlatMapOps, toFunctorOps}
-import com.pp.students_organizer_backend.domain.MaterialEntity
+import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId}
 import com.pp.students_organizer_backend.utils.DatabaseCodes.{materialId, materialName, materialUrl}
 import skunk.codec.all.{int4, uuid, varchar}
 import skunk.implicits.sql
 import skunk.{Command, Query, Session, Void, ~}
 import skunk.implicits.toIdOps
 
-import java.util.UUID
-
 trait MaterialService[F[_]]:
   def getAll: F[List[MaterialEntity]]
   def insert(material: MaterialEntity): F[Unit]
-  def remove(materialId: UUID): F[Unit]
+  def remove(materialId: MaterialId): F[Unit]
 
 object MaterialService:
   def make[F[_]: Concurrent](
@@ -27,7 +25,6 @@ object MaterialService:
           session.execute(ServiceSQL.getAllQuery)
         }
 
-      // TODO: Figure out why this is not add new material properly
       override def insert(material: MaterialEntity): F[Unit] =
         database.use { session =>
           session
@@ -36,7 +33,7 @@ object MaterialService:
             .void
         }
 
-      override def remove(materialId: UUID): F[Unit] =
+      override def remove(materialId: MaterialId): F[Unit] =
         database.use { session =>
           session
             .prepare(ServiceSQL.removeCommand)
@@ -54,5 +51,5 @@ object MaterialService:
       sql"INSERT INTO material (id, name, url) VALUES ($materialId, $materialName, $materialUrl)".command
         .gcontramap[MaterialEntity]
 
-    val removeCommand: Command[UUID] =
-      sql"DELETE FROM material WHERE id=$uuid".command
+    val removeCommand: Command[MaterialId] =
+      sql"DELETE FROM material WHERE id=$materialId".command
