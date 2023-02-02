@@ -10,7 +10,7 @@ case class MaterialEntity(
     url: MaterialUrl
 )
 
-object MaterialEntity {
+object MaterialEntity:
   def create(
       id: UUID,
       name: String,
@@ -34,7 +34,6 @@ object MaterialEntity {
       name = name,
       url = url
     )
-}
 
 case class MaterialId(value: UUID)
 
