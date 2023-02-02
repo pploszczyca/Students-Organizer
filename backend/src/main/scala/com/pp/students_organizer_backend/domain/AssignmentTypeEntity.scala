@@ -1,9 +1,34 @@
 package com.pp.students_organizer_backend.domain
 
-case class AssignmentTypeEntity(id: Int, name: String)
+import com.pp.students_organizer_backend.domain.common.ValidationError
+
+import java.util.UUID
+
+case class AssignmentTypeEntity(
+    id: AssignmentTypeId,
+    name: AssignmentTypeName
+)
 
 object AssignmentTypeEntity:
-  private val NO_ID_VALUE = -1
+  def create(
+      name: String
+  ): Either[ValidationError, AssignmentTypeEntity] =
+    for {
+      assignmentTypeid <- AssignmentTypeId.create()
+      assignmentTypeName <- AssignmentTypeName.create(name)
+    } yield AssignmentTypeEntity(
+      id = assignmentTypeid,
+      name = assignmentTypeName
+    )
 
-  def apply(name: String): AssignmentTypeEntity =
-    AssignmentTypeEntity(NO_ID_VALUE, name)
+case class AssignmentTypeId(value: UUID)
+object AssignmentTypeId:
+  def create(): Either[ValidationError, AssignmentTypeId] =
+    Right(AssignmentTypeId(UUID.randomUUID()))
+
+case class AssignmentTypeName(value: String)
+object AssignmentTypeName:
+  def create(value: String): Either[ValidationError, AssignmentTypeName] =
+    if (value.isEmpty)
+      Left(ValidationError("Assignment Type name can't be empty"))
+    else Right(AssignmentTypeName(value))
