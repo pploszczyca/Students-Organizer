@@ -1,3 +1,7 @@
+GET localhost:8080/material
+
+###
+
 POST localhost:8080/material
 Content-Type: application/json
 

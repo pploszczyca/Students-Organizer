@@ -34,13 +34,6 @@ object MaterialEntity {
       name = name,
       url = url
     )
-
-  def empty(): MaterialEntity =
-    MaterialEntity(
-      id = MaterialId(UUID.fromString("")),
-      name = MaterialName(""),
-      url = MaterialUrl(""),
-    )
 }
 
 case class MaterialId(value: UUID)

@@ -4,6 +4,7 @@ import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.{toFlatMapOps, toFunctorOps}
 import com.pp.students_organizer_backend.domain.MaterialEntity
+import com.pp.students_organizer_backend.utils.DatabaseCodes.{materialId, materialName, materialUrl}
 import skunk.codec.all.{int4, uuid, varchar}
 import skunk.implicits.sql
 import skunk.{Command, Query, Session, Void, ~}
@@ -26,6 +27,7 @@ object MaterialService:
           session.execute(ServiceSQL.getAllQuery)
         }
 
+      // TODO: Figure out why this is not add new material properly
       override def insert(material: MaterialEntity): F[Unit] =
         database.use { session =>
           session
@@ -45,12 +47,12 @@ object MaterialService:
   private object ServiceSQL:
     val getAllQuery: Query[Void, MaterialEntity] =
       sql"SELECT id, name, url FROM material"
-        .query(uuid ~ varchar ~ varchar)
-        .map { case id ~ name ~ url => MaterialEntity.create(id, name, url).getOrElse(MaterialEntity.empty()) }
+        .query(materialId ~ materialName ~ materialUrl)
+        .gmap[MaterialEntity]
 
     val insertCommand: Command[MaterialEntity] =
-      sql"INSERT INTO material (id, name, url) VALUES ($uuid, $varchar, $varchar)".command
-        .contramap(material => ((material.id.value, material.name.value), material.url.value))
+      sql"INSERT INTO material (id, name, url) VALUES ($materialId $materialName, $materialUrl)".command
+        .gcontramap[MaterialEntity]
 
     val removeCommand: Command[UUID] =
       sql"DELETE FROM material WHERE id=$uuid".command
