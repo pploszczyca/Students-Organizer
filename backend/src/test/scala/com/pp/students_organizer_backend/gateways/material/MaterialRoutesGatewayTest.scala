@@ -2,7 +2,7 @@ package com.pp.students_organizer_backend.gateways.material
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.MaterialEntity
+import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId}
 import com.pp.students_organizer_backend.domain.errors.ValidationError
 import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
@@ -49,13 +49,14 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
   }
 
   "ON remove" should "remove material" in {
-    val materialId = UUID.randomUUID()
+    val id = UUID.randomUUID()
+    val materialId = MaterialId(id)
 
     when(materialService.remove(any())) thenReturn IO.unit
 
     tested(
       materialService = materialService
-    ).remove(materialId)
+    ).remove(id)
 
     verify(materialService).remove(materialId)
   }

@@ -2,7 +2,8 @@ package com.pp.students_organizer_backend.gateways.assignmentType
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
+import com.pp.students_organizer_backend.domain.errors.ValidationError
+import com.pp.students_organizer_backend.domain.{AssignmentTypeEntity, AssignmentTypeId}
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
@@ -10,6 +11,8 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
+
+import java.util.UUID
 
 class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
   private val assignmentTypeService: AssignmentTypeService[IO] = mock
@@ -34,7 +37,7 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
     val insertRequest = mock[InsertAssignmentTypeRequest]
     val assignmentType = mock[AssignmentTypeEntity]
     val mapToAssignmentType =
-      (* : InsertAssignmentTypeRequest) => assignmentType
+      (* : InsertAssignmentTypeRequest) => Right(assignmentType)
 
     when(assignmentTypeService.insert(any())) thenReturn IO.unit
 
@@ -47,13 +50,14 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
   }
 
   "ON remove" should "remove assignment type" in {
-    val assignmentTypeId = 99
+    val id = UUID.randomUUID()
+    val assignmentTypeId = AssignmentTypeId(id)
 
     when(assignmentTypeService.remove(any())) thenReturn IO.unit
 
     tested(
       assignmentTypeService = assignmentTypeService,
-    ).remove(assignmentTypeId)
+    ).remove(id)
 
     verify(assignmentTypeService).remove(assignmentTypeId)
   }
@@ -62,7 +66,10 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
       assignmentTypeService: AssignmentTypeService[IO] = mock,
       mapToGetAssignmentTypeResponse: AssignmentTypeEntity => GetAssignmentTypeResponse =
         (* : AssignmentTypeEntity) => mock,
-      mapToAssignmentType: InsertAssignmentTypeRequest => AssignmentTypeEntity =
+      mapToAssignmentType: InsertAssignmentTypeRequest => Either[
+        ValidationError,
+        AssignmentTypeEntity
+      ] =
         (* : InsertAssignmentTypeRequest) => mock
   ): AssignmentTypeRoutesGateway[IO] =
     AssignmentTypeRoutesGateway.make(

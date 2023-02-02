@@ -24,18 +24,20 @@ import org.mockito.Mockito.{verify, when}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 
+import java.util.UUID
+
 class AssignmentTypeRoutesTest extends AnyFlatSpec:
   private val gateway = mock[AssignmentTypeRoutesGateway[IO]]
 
   "GET -> /assignmentType" should "return response" in {
     val assignmentTypeResponse = GetAssignmentTypeResponse(
-      id = 42,
+      id = UUID.fromString("3efe9e6d-4163-40e5-8ea0-aebe46b502c4"),
       name = "name"
     )
     val expectedResponse =
       json"""[
          {
-          "id": 42,
+          "id": "3efe9e6d-4163-40e5-8ea0-aebe46b502c4",
           "name": "name"
          }
       ]"""
@@ -76,12 +78,12 @@ class AssignmentTypeRoutesTest extends AnyFlatSpec:
   }
 
   "DELETE -> /assignmentType" should "delete assignment type" in {
-    val assignmentTypeId = 1
+    val assignmentTypeId = UUID.fromString("3efe9e6d-4163-40e5-8ea0-aebe46b502c4")
 
     when(gateway.remove(any())) thenReturn IO.unit
 
     val actualResponse = tested(gateway = gateway)().orNotFound
-      .run(DELETE(uri"/assignmentType/1"))
+      .run(DELETE(uri"/assignmentType/3efe9e6d-4163-40e5-8ea0-aebe46b502c4"))
       .unsafeRunSync()
 
     verify(gateway).remove(assignmentTypeId)
