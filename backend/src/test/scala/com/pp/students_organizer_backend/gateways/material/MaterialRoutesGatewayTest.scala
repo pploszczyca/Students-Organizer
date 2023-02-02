@@ -3,6 +3,7 @@ package com.pp.students_organizer_backend.gateways.material
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.MaterialEntity
+import com.pp.students_organizer_backend.domain.common.ValidationError
 import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
@@ -10,6 +11,8 @@ import org.mockito.ArgumentMatchers.{any, matches}
 import org.mockito.Mockito.{verify, when}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
+
+import java.util.UUID
 
 class MaterialRoutesGatewayTest extends AnyFlatSpec:
   private val materialService: MaterialService[IO] = mock
@@ -33,26 +36,26 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
   "ON insert" should "insert new material" in {
     val request = mock[InsertMaterialRequest]
     val material = mock[MaterialEntity]
-    val mapToMaterial = (* : InsertMaterialRequest) => material
+    val mapToMaterial = (* : InsertMaterialRequest) => Right(material)
 
     when(materialService.insert(any())) thenReturn IO.unit
 
     tested(
       materialService = materialService,
       mapToMaterial = mapToMaterial
-    ).insert(request).unsafeRunSync()
+    ).insert(request)
 
     verify(materialService).insert(material)
   }
 
   "ON remove" should "remove material" in {
-    val materialId = 99
+    val materialId = UUID.randomUUID()
 
     when(materialService.remove(any())) thenReturn IO.unit
 
     tested(
       materialService = materialService
-    ).remove(materialId).unsafeRunSync()
+    ).remove(materialId)
 
     verify(materialService).remove(materialId)
   }
@@ -61,7 +64,7 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
       materialService: MaterialService[IO] = mock,
       mapToGetMaterialResponse: MaterialEntity => GetMaterialResponse =
         (* : MaterialEntity) => mock,
-      mapToMaterial: InsertMaterialRequest => MaterialEntity =
+      mapToMaterial: InsertMaterialRequest => Either[ValidationError, MaterialEntity] =
         (* : InsertMaterialRequest) => mock
   ): MaterialRoutesGateway[IO] =
     MaterialRoutesGateway.make(

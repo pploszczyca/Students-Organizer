@@ -47,5 +47,5 @@ object MaterialName:
 case class MaterialUrl(value: String)
 object MaterialUrl:
   def create(value: String): Either[ValidationError, MaterialUrl] =
-    if (value.isEmpty) Left(ValidationError("Material name can't be empty"))
+    if (value.isEmpty) Left(ValidationError("Material url can't be empty"))
     else Right(MaterialUrl(value))
