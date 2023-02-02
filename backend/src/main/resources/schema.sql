@@ -13,7 +13,7 @@ create table public.material
 
 create table public.task
 (
-    id     UUID    NOT NULL PRIMARY KEY,
-    name   VARCHAR NOT NULL,
-    isDone BOOL    NOT NULL
+    id      UUID    NOT NULL PRIMARY KEY,
+    name    VARCHAR NOT NULL,
+    is_done BOOL    NOT NULL
 )
