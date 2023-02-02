@@ -14,13 +14,7 @@ import com.pp.students_organizer_backend.services.AssignmentTypeService
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import io.circe.{Decoder, Encoder}
-import org.http4s.circe.{
-  JsonDecoder,
-  jsonEncoder,
-  jsonEncoderOf,
-  jsonOf,
-  toMessageSyntax
-}
+import org.http4s.circe.{JsonDecoder, jsonEncoder, jsonEncoderOf, jsonOf, toMessageSyntax}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}

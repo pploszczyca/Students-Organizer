@@ -4,12 +4,12 @@ import cats.Applicative
 import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.implicits.toFunctorOps
+import cats.syntax.all.toFlatMapOps
 import com.pp.students_organizer_backend.domain.{AssignmentTypeEntity, AssignmentTypeId}
+import com.pp.students_organizer_backend.utils.DatabaseCodes.AssignmentType.{assignmentTypeId, assignmentTypeName}
 import skunk.codec.all.{int4, varchar}
 import skunk.implicits.{sql, toIdOps}
 import skunk.{Command, Query, Session, Void}
-import cats.syntax.all.toFlatMapOps
-import com.pp.students_organizer_backend.utils.DatabaseCodes.AssignmentType.{assignmentTypeId, assignmentTypeName}
 
 trait AssignmentTypeService[F[_]]:
   def getAll: F[List[AssignmentTypeEntity]]

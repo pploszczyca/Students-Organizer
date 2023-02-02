@@ -2,8 +2,8 @@ package com.pp.students_organizer_backend.gateways.material
 
 import cats.effect.kernel.Sync
 import cats.syntax.all.toFunctorOps
-import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId}
 import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
+import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId}
 import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
@@ -19,7 +19,9 @@ object MaterialRoutesGateway:
   def make[F[_]: Sync](
       materialService: MaterialService[F],
       mapToGetMaterialResponse: MaterialEntity => GetMaterialResponse,
-      mapToMaterial: InsertMaterialRequest => Either[ValidationError, MaterialEntity]
+      mapToMaterial: InsertMaterialRequest => Either[ValidationError,
+                                                     MaterialEntity
+      ]
   ): MaterialRoutesGateway[F] =
     new MaterialRoutesGateway[F]:
       override def getAll: F[List[GetMaterialResponse]] =
@@ -29,7 +31,8 @@ object MaterialRoutesGateway:
       override def insert(request: InsertMaterialRequest): F[Unit] =
         mapToMaterial(request) match
           case Right(value) => materialService.insert(value)
-          case Left(ValidationError(message)) => throw ValidationException(message)
+          case Left(ValidationError(message)) =>
+            throw ValidationException(message)
 
       override def remove(materialId: UUID): F[Unit] =
         materialService

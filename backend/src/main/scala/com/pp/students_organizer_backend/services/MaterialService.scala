@@ -6,9 +6,8 @@ import cats.syntax.all.{toFlatMapOps, toFunctorOps}
 import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId}
 import com.pp.students_organizer_backend.utils.DatabaseCodes.{materialId, materialName, materialUrl}
 import skunk.codec.all.{int4, uuid, varchar}
-import skunk.implicits.sql
+import skunk.implicits.{sql, toIdOps}
 import skunk.{Command, Query, Session, Void, ~}
-import skunk.implicits.toIdOps
 
 trait MaterialService[F[_]]:
   def getAll: F[List[MaterialEntity]]

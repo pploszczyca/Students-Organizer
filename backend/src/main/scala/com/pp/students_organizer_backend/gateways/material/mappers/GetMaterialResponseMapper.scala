@@ -8,6 +8,6 @@ object GetMaterialResponseMapper {
     GetMaterialResponse(
       id = material.id.value,
       name = material.name.value,
-      url = material.url.value,
+      url = material.url.value
     )
 }

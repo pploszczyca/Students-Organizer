@@ -16,7 +16,7 @@ class Gateways[F[_]: Async](services: Services[F]):
     AssignmentTypeRoutesGateway.make[F](
       assignmentTypeService = services.assignmentType,
       mapToGetAssignmentTypeResponse = GetAssignmentTypeResponseMapper.map,
-      mapToAssignmentType = AssignmentTypeEntityMapper.map,
+      mapToAssignmentType = AssignmentTypeEntityMapper.map
     )
 
   lazy val materialRoutes: MaterialRoutesGateway[F] =

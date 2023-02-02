@@ -12,5 +12,5 @@ object Database:
       user = "postgres",
       database = "postgres",
       password = Some("password"),
-      debug = true,
+      debug = true
     )
