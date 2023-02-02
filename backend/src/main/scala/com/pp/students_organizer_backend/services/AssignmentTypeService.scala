@@ -4,16 +4,17 @@ import cats.Applicative
 import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.implicits.toFunctorOps
-import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
+import com.pp.students_organizer_backend.domain.{AssignmentTypeEntity, AssignmentTypeId}
 import skunk.codec.all.{int4, varchar}
 import skunk.implicits.{sql, toIdOps}
 import skunk.{Command, Query, Session, Void}
 import cats.syntax.all.toFlatMapOps
+import com.pp.students_organizer_backend.utils.DatabaseCodes.AssignmentType.{assignmentTypeId, assignmentTypeName}
 
 trait AssignmentTypeService[F[_]]:
   def getAll: F[List[AssignmentTypeEntity]]
   def insert(assignmentType: AssignmentTypeEntity): F[Unit]
-  def remove(assignmentTypeId: Int): F[Unit]
+  def remove(assignmentTypeId: AssignmentTypeId): F[Unit]
 
 object AssignmentTypeService:
   def make[F[_]: Concurrent](
@@ -33,7 +34,7 @@ object AssignmentTypeService:
             .void
         }
 
-      override def remove(assignmentTypeId: Int): F[Unit] =
+      override def remove(assignmentTypeId: AssignmentTypeId): F[Unit] =
         database.use { session =>
           session
             .prepare(ServiceSQL.removeCommand)
@@ -44,12 +45,12 @@ object AssignmentTypeService:
   private object ServiceSQL:
     val getAllQuery: Query[Void, AssignmentTypeEntity] =
       sql"SELECT id, name FROM assignment_type"
-        .query(int4 ~ varchar)
+        .query(assignmentTypeId ~ assignmentTypeName)
         .gmap[AssignmentTypeEntity]
 
     val insertCommand: Command[AssignmentTypeEntity] =
-      sql"INSERT INTO assignment_type (name) VALUES ($varchar)".command
-        .contramap(assignmentType => assignmentType.name)
+      sql"INSERT INTO assignment_type (id, name) VALUES ($assignmentTypeId, $assignmentTypeName)".command
+        .gcontramap[AssignmentTypeEntity]
 
-    val removeCommand: Command[Int] =
-      sql"DELETE FROM assignment_type WHERE id=$int4".command
+    val removeCommand: Command[AssignmentTypeId] =
+      sql"DELETE FROM assignment_type WHERE id=$assignmentTypeId".command

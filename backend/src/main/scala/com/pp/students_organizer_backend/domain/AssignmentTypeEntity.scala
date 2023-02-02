@@ -14,10 +14,10 @@ object AssignmentTypeEntity:
       name: String
   ): Either[ValidationError, AssignmentTypeEntity] =
     for {
-      assignmentTypeid <- AssignmentTypeId.create()
+      assignmentTypeId <- AssignmentTypeId.create()
       assignmentTypeName <- AssignmentTypeName.create(name)
     } yield AssignmentTypeEntity(
-      id = assignmentTypeid,
+      id = assignmentTypeId,
       name = assignmentTypeName
     )
 

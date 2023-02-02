@@ -5,7 +5,9 @@ import io.circe.{Decoder, Encoder}
 import org.http4s.circe.{jsonEncoderOf, jsonOf}
 import org.http4s.{EntityDecoder, EntityEncoder}
 
+import java.util.UUID
+
 case class GetAssignmentTypeResponse(
-    id: Long,
+    id: UUID,
     name: String
 )
