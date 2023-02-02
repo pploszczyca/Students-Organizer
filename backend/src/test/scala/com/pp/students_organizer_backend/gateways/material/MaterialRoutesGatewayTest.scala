@@ -3,7 +3,7 @@ package com.pp.students_organizer_backend.gateways.material
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId}
-import com.pp.students_organizer_backend.domain.errors.ValidationError
+import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
 import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
@@ -46,6 +46,24 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
     ).insert(request)
 
     verify(materialService).insert(material)
+  }
+
+  "ON insert" should "throw validation exception WHEN mapper returned error" in {
+    val request = mock[InsertMaterialRequest]
+    val errorMessage = "errorMessage"
+    val error = ValidationError(errorMessage)
+    val mapToMaterial = (* : InsertMaterialRequest) => Left(error)
+    val expectedException = ValidationException(errorMessage)
+
+    when(materialService.insert(any())) thenReturn IO.unit
+
+    val actualException = intercept[ValidationException] {
+      tested(
+        materialService = materialService,
+        mapToMaterial = mapToMaterial
+      ).insert(request)
+    }
+    assert(actualException == expectedException)
   }
 
   "ON remove" should "remove material" in {

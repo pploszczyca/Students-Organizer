@@ -2,7 +2,7 @@ package com.pp.students_organizer_backend.gateways.assignmentType
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.errors.ValidationError
+import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
 import com.pp.students_organizer_backend.domain.{AssignmentTypeEntity, AssignmentTypeId}
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
@@ -47,6 +47,25 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
     ).insert(insertRequest).unsafeRunSync()
 
     verify(assignmentTypeService).insert(assignmentType)
+  }
+
+  "ON insert" should "throw validation exception WHEN mapper returned error" in {
+    val insertRequest = mock[InsertAssignmentTypeRequest]
+    val errorMessage = "errorMessage"
+    val error = ValidationError(errorMessage)
+    val mapToAssignmentType = (* : InsertAssignmentTypeRequest) => Left(error)
+    val expectedException = ValidationException(errorMessage)
+
+    when(assignmentTypeService.insert(any())) thenReturn IO.unit
+
+    val actualException = intercept[ValidationException] {
+      tested(
+        assignmentTypeService = assignmentTypeService,
+        mapToAssignmentType = mapToAssignmentType
+      ).insert(insertRequest).unsafeRunSync()
+    }
+
+    assert(actualException == expectedException)
   }
 
   "ON remove" should "remove assignment type" in {
