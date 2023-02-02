@@ -3,6 +3,7 @@ package com.pp.students_organizer_backend.routes.assignmentType
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
+import com.pp.students_organizer_backend.domain.errors.ValidationException
 import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
@@ -77,8 +78,37 @@ class AssignmentTypeRoutesTest extends AnyFlatSpec:
     )
   }
 
+  "POST -> /assignmentType" should "return error WHEN exception occurs" in {
+    val jsonRequest =
+      json"""{
+         "name": "assignmentType name"
+          }"""
+    val request = InsertAssignmentTypeRequest(
+      name = "assignmentType name"
+    )
+    val errorMessage = "error message"
+    val exception = ValidationException(errorMessage)
+    val expectedResponse =
+      json"""
+            "error message"
+          """
+
+    when(gateway.insert(any())) thenAnswer (* => throw exception)
+
+    val actualResponse = tested(gateway = gateway)().orNotFound
+      .run(POST(jsonRequest, uri"/assignmentType"))
+
+    verify(gateway).insert(request)
+    RoutesChecker.check(
+      expectedStatus = Status.BadRequest,
+      expectedResponse = expectedResponse,
+      actualResponse = actualResponse
+    )
+  }
+
   "DELETE -> /assignmentType" should "delete assignment type" in {
-    val assignmentTypeId = UUID.fromString("3efe9e6d-4163-40e5-8ea0-aebe46b502c4")
+    val assignmentTypeId =
+      UUID.fromString("3efe9e6d-4163-40e5-8ea0-aebe46b502c4")
 
     when(gateway.remove(any())) thenReturn IO.unit
 
@@ -89,7 +119,7 @@ class AssignmentTypeRoutesTest extends AnyFlatSpec:
     verify(gateway).remove(assignmentTypeId)
     RoutesChecker.checkStatus(
       response = actualResponse,
-      expectedStatus = Status.NoContent,
+      expectedStatus = Status.NoContent
     )
   }
 
