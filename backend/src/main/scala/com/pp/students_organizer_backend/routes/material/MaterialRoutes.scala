@@ -2,20 +2,15 @@ package com.pp.students_organizer_backend.routes.material
 
 import cats.effect.Sync
 import cats.implicits.catsSyntaxApply
-import cats.syntax.all.toFunctorOps
+import cats.syntax.all.{catsSyntaxApplicativeError, toFunctorOps}
 import cats.syntax.flatMap.toFlatMapOps
+import com.pp.students_organizer_backend.domain.common.BadArgumentsError
 import com.pp.students_organizer_backend.gateways.material.MaterialRoutesGateway
 import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.http4s.HttpRoutes
-import org.http4s.circe.{
-  JsonDecoder,
-  jsonEncoder,
-  jsonEncoderOf,
-  jsonOf,
-  toMessageSyntax
-}
+import org.http4s.circe.{JsonDecoder, jsonEncoder, jsonEncoderOf, jsonOf, toMessageSyntax}
 import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
@@ -34,11 +29,12 @@ class MaterialRoutes[F[_]: JsonDecoder: Sync](
       case request @ POST -> Root =>
         request
           .asJsonDecode[InsertMaterialRequest]
-          .flatMap(gateway.insert) *> Created()
-//          .flatMap {
-//            case Left(error) => BadRequest(error.asJson)
-//            case Right(_) => Created()
-//          }
+          .flatMap { request =>
+            gateway.insert(request) *> Created()
+          }
+          .handleErrorWith {
+            case BadArgumentsError(value) => BadRequest(value.asJson)
+          }
 
       case DELETE -> Root / UUIDVar(materialId) =>
         gateway
