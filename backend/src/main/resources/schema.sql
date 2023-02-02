@@ -10,3 +10,10 @@ create table public.material
     name VARCHAR NOT NULL,
     url  VARCHAR NOT NULL
 );
+
+create table public.task
+(
+    id     UUID    NOT NULL PRIMARY KEY,
+    name   VARCHAR NOT NULL,
+    isDone BOOL    NOT NULL
+)
