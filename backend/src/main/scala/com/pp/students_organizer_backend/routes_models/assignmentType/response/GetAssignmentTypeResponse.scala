@@ -1,4 +1,4 @@
-package com.pp.students_organizer_backend.routes.assignmentType.models.response
+package com.pp.students_organizer_backend.routes_models.assignmentType.response
 
 import cats.effect.kernel.Concurrent
 import io.circe.{Decoder, Encoder}

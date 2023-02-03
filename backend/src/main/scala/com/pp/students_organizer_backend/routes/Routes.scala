@@ -3,8 +3,6 @@ package com.pp.students_organizer_backend.routes
 import cats.effect.{Async, Resource}
 import cats.syntax.all.toSemigroupKOps
 import com.pp.students_organizer_backend.gateways.Gateways
-import com.pp.students_organizer_backend.routes.assignmentType.AssignmentTypeRoutes
-import com.pp.students_organizer_backend.routes.material.MaterialRoutes
 import com.pp.students_organizer_backend.services.{AssignmentTypeService, Services}
 import org.http4s.HttpRoutes
 import skunk.Session

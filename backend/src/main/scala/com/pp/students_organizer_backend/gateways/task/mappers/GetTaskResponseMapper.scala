@@ -1,7 +1,8 @@
 package com.pp.students_organizer_backend.gateways.task.mappers
 
 import com.pp.students_organizer_backend.domain.TaskEntity
-import com.pp.students_organizer_backend.routes.task.models.response.GetTaskResponse
+import com.pp.students_organizer_backend.routes_models.task
+import com.pp.students_organizer_backend.routes_models.task.response.GetTaskResponse
 
 trait GetTaskResponseMapper:
   def map(task: TaskEntity): GetTaskResponse

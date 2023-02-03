@@ -14,8 +14,8 @@ import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{
   AssignmentTypeEntityMapper,
   GetAssignmentTypeResponseMapper
 }
-import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
-import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
+import com.pp.students_organizer_backend.routes_models.assignmentType.request.InsertAssignmentTypeRequest
+import com.pp.students_organizer_backend.routes_models.assignmentType.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
 
 import java.util.UUID

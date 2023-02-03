@@ -4,8 +4,7 @@ import cats.effect.kernel.Async
 import cats.effect.{Async, Resource}
 import cats.syntax.all.*
 import com.comcast.ip4s.*
-import com.pp.students_organizer_backend.routes.Routes
-import com.pp.students_organizer_backend.routes.assignmentType.AssignmentTypeRoutes
+import com.pp.students_organizer_backend.routes.{AssignmentTypeRoutes, Routes}
 import fs2.Stream
 import org.http4s.ember.client.EmberClientBuilder
 import org.http4s.ember.server.EmberServerBuilder

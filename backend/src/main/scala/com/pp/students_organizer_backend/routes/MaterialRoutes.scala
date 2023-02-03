@@ -1,4 +1,4 @@
-package com.pp.students_organizer_backend.routes.material
+package com.pp.students_organizer_backend.routes
 
 import cats.effect.Sync
 import cats.implicits.catsSyntaxApply
@@ -6,7 +6,7 @@ import cats.syntax.all.{catsSyntaxApplicativeError, toFunctorOps}
 import cats.syntax.flatMap.toFlatMapOps
 import com.pp.students_organizer_backend.domain.errors.ValidationException
 import com.pp.students_organizer_backend.gateways.material.MaterialRoutesGateway
-import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
+import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.http4s.HttpRoutes

@@ -3,7 +3,6 @@ package com.pp.students_organizer_backend.gateways.task
 import cats.effect.IO
 import com.pp.students_organizer_backend.domain.{TaskEntity, TaskId}
 import com.pp.students_organizer_backend.gateways.task.mappers.{GetTaskResponseMapper, TaskEntityMapper}
-import com.pp.students_organizer_backend.routes.task.models.response.GetTaskResponse
 import com.pp.students_organizer_backend.services.TaskService
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{inOrder, verify, when}
@@ -11,7 +10,8 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
-import com.pp.students_organizer_backend.routes.task.models.request.InsertTaskRequest
+import com.pp.students_organizer_backend.routes_models.task.request.InsertTaskRequest
+import com.pp.students_organizer_backend.routes_models.task.response.GetTaskResponse
 
 import java.util.UUID
 

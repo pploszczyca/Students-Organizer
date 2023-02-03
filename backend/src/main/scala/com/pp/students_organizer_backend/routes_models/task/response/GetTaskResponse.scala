@@ -1,4 +1,4 @@
-package com.pp.students_organizer_backend.routes.task.models.response
+package com.pp.students_organizer_backend.routes_models.task.response
 
 import java.util.UUID
 

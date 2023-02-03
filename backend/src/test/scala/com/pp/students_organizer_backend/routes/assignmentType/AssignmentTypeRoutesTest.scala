@@ -5,8 +5,9 @@ import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
 import com.pp.students_organizer_backend.domain.errors.ValidationException
 import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
-import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
-import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
+import com.pp.students_organizer_backend.routes.AssignmentTypeRoutes
+import com.pp.students_organizer_backend.routes_models.assignmentType.request.InsertAssignmentTypeRequest
+import com.pp.students_organizer_backend.routes_models.assignmentType.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
 import com.pp.students_organizer_backend.test_utils.RoutesChecker
 import fs2.Stream

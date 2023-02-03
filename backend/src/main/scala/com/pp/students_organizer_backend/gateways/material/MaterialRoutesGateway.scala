@@ -11,8 +11,8 @@ import com.pp.students_organizer_backend.gateways.material.mappers.{
   GetMaterialResponseMapper,
   MaterialEntityMapper
 }
-import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
-import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
+import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
+import com.pp.students_organizer_backend.routes_models.material.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
 
 import java.util.UUID

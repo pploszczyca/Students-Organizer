@@ -5,8 +5,8 @@ import cats.syntax.all.toFunctorOps
 import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
 import com.pp.students_organizer_backend.domain.{TaskEntity, TaskId}
 import com.pp.students_organizer_backend.gateways.task.mappers.{GetTaskResponseMapper, TaskEntityMapper}
-import com.pp.students_organizer_backend.routes.task.models.request.InsertTaskRequest
-import com.pp.students_organizer_backend.routes.task.models.response.GetTaskResponse
+import com.pp.students_organizer_backend.routes_models.task.request.InsertTaskRequest
+import com.pp.students_organizer_backend.routes_models.task.response.GetTaskResponse
 import com.pp.students_organizer_backend.services.TaskService
 
 import java.util.UUID

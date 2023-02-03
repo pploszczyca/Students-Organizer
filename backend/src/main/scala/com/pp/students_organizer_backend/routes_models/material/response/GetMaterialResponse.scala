@@ -1,4 +1,4 @@
-package com.pp.students_organizer_backend.routes.material.models.response
+package com.pp.students_organizer_backend.routes_models.material.response
 
 import java.util.UUID
 

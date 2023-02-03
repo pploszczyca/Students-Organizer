@@ -1,4 +1,4 @@
-package com.pp.students_organizer_backend.routes.assignmentType
+package com.pp.students_organizer_backend.routes
 
 import cats.effect.kernel.Concurrent
 import cats.effect.{Concurrent, Sync}
@@ -8,8 +8,8 @@ import cats.syntax.flatMap.toFlatMapOps
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
 import com.pp.students_organizer_backend.domain.errors.ValidationException
 import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
-import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
-import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
+import com.pp.students_organizer_backend.routes_models.assignmentType.request.InsertAssignmentTypeRequest
+import com.pp.students_organizer_backend.routes_models.assignmentType.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
 import io.circe.generic.auto.*
 import io.circe.syntax.*

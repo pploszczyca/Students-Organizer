@@ -4,8 +4,9 @@ import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.errors.ValidationException
 import com.pp.students_organizer_backend.gateways.material.MaterialRoutesGateway
-import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
-import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
+import com.pp.students_organizer_backend.routes.MaterialRoutes
+import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
+import com.pp.students_organizer_backend.routes_models.material.response.GetMaterialResponse
 import com.pp.students_organizer_backend.test_utils.RoutesChecker
 import io.circe.literal.json
 import org.http4s.Method.{DELETE, GET, POST}

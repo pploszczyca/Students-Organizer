@@ -5,8 +5,8 @@ import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
 import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId}
 import com.pp.students_organizer_backend.gateways.material.mappers.{GetMaterialResponseMapper, MaterialEntityMapper}
-import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
-import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
+import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
+import com.pp.students_organizer_backend.routes_models.material.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
 import org.mockito.ArgumentMatchers.{any, matches}
 import org.mockito.Mockito.{inOrder, verify, when}
