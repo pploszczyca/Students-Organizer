@@ -25,16 +25,16 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
     val response = mock[GetMaterialResponse]
     val expected = List(response)
 
-    given mapToGetMaterialResponse: GetMaterialResponseMapper = mock
+    given getMaterialResponseMapper: GetMaterialResponseMapper = mock
 
-    when(mapToGetMaterialResponse.map(any())) thenReturn response
+    when(getMaterialResponseMapper.map(any())) thenReturn response
     when(materialService.getAll) thenReturn IO(List(material))
 
     val actual = tested(
       materialService = materialService,
     ).getAll.unsafeRunSync()
 
-    verify(mapToGetMaterialResponse).map(material)
+    verify(getMaterialResponseMapper).map(material)
     assert(actual == expected)
   }
 
