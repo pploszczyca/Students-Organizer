@@ -9,7 +9,7 @@ import com.pp.students_organizer_backend.routes.material.models.request.InsertMa
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
 import org.mockito.ArgumentMatchers.{any, matches}
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{inOrder, verify, when}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 
@@ -34,6 +34,7 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
       materialService = materialService,
     ).getAll.unsafeRunSync()
 
+    verify(mapToGetMaterialResponse).map(material)
     assert(actual == expected)
   }
 
@@ -50,7 +51,9 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
       materialService = materialService,
     ).insert(request)
 
-    verify(materialService).insert(material)
+    val inOrderCheck = inOrder(materialEntityMapper, materialService)
+    inOrderCheck.verify(materialEntityMapper).map(request)
+    inOrderCheck.verify(materialService).insert(material)
   }
 
   "ON insert" should "throw validation exception WHEN mapper returned error" in {
@@ -69,6 +72,8 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
         materialService = materialService,
       ).insert(request)
     }
+
+    verify(materialEntityMapper).map(request)
     assert(actualException == expectedException)
   }
 

@@ -2,23 +2,14 @@ package com.pp.students_organizer_backend.gateways.assignmentType
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.errors.{
-  ValidationError,
-  ValidationException
-}
-import com.pp.students_organizer_backend.domain.{
-  AssignmentTypeEntity,
-  AssignmentTypeId
-}
-import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{
-  AssignmentTypeEntityMapper,
-  GetAssignmentTypeResponseMapper
-}
+import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
+import com.pp.students_organizer_backend.domain.{AssignmentTypeEntity, AssignmentTypeId}
+import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{AssignmentTypeEntityMapper, GetAssignmentTypeResponseMapper}
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{inOrder, verify, when}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 
@@ -45,6 +36,7 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
       assignmentTypeService = assignmentTypeService
     ).getAll.unsafeRunSync()
 
+    verify(getAssignmentTypeResponseMapper).map(assignmentType)
     assert(actual == expected)
   }
 
@@ -61,7 +53,9 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
       assignmentTypeService = assignmentTypeService
     ).insert(insertRequest).unsafeRunSync()
 
-    verify(assignmentTypeService).insert(assignmentType)
+    val inOrderCheck = inOrder(assignmentTypeEntityMapper, assignmentTypeService)
+    inOrderCheck.verify(assignmentTypeEntityMapper).map(insertRequest)
+    inOrderCheck.verify(assignmentTypeService).insert(assignmentType)
   }
 
   "ON insert" should "throw validation exception WHEN mapper returned error" in {
@@ -81,6 +75,7 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
       ).insert(insertRequest).unsafeRunSync()
     }
 
+    verify(assignmentTypeEntityMapper).map(insertRequest)
     assert(actualException == expectedException)
   }
 
