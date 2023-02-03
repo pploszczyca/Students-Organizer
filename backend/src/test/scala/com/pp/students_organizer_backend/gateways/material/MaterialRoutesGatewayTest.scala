@@ -2,8 +2,9 @@ package com.pp.students_organizer_backend.gateways.material
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId}
 import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
+import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId}
+import com.pp.students_organizer_backend.gateways.material.mappers.{GetMaterialResponseMapper, MaterialEntityMapper}
 import com.pp.students_organizer_backend.routes.material.models.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes.material.models.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
@@ -16,18 +17,21 @@ import java.util.UUID
 
 class MaterialRoutesGatewayTest extends AnyFlatSpec:
   private val materialService: MaterialService[IO] = mock
+  private given mockGetMaterialResponseMapper: GetMaterialResponseMapper = mock
+  private given mockMaterialEntityMapper: MaterialEntityMapper = mock
 
   "ON getAll" should "return all all materials as response" in {
     val material = mock[MaterialEntity]
     val response = mock[GetMaterialResponse]
-    val mapToGetMaterialResponse = (* : MaterialEntity) => response
     val expected = List(response)
 
+    given mapToGetMaterialResponse: GetMaterialResponseMapper = mock
+
+    when(mapToGetMaterialResponse.map(any())) thenReturn response
     when(materialService.getAll) thenReturn IO(List(material))
 
     val actual = tested(
       materialService = materialService,
-      mapToGetMaterialResponse = mapToGetMaterialResponse
     ).getAll.unsafeRunSync()
 
     assert(actual == expected)
@@ -36,13 +40,14 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
   "ON insert" should "insert new material" in {
     val request = mock[InsertMaterialRequest]
     val material = mock[MaterialEntity]
-    val mapToMaterial = (* : InsertMaterialRequest) => Right(material)
 
+    given materialEntityMapper: MaterialEntityMapper = mock
+
+    when(materialEntityMapper.map(any())) thenReturn Right(material)
     when(materialService.insert(any())) thenReturn IO.unit
 
     tested(
       materialService = materialService,
-      mapToMaterial = mapToMaterial
     ).insert(request)
 
     verify(materialService).insert(material)
@@ -52,15 +57,16 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
     val request = mock[InsertMaterialRequest]
     val errorMessage = "errorMessage"
     val error = ValidationError(errorMessage)
-    val mapToMaterial = (* : InsertMaterialRequest) => Left(error)
     val expectedException = ValidationException(errorMessage)
 
+    given materialEntityMapper: MaterialEntityMapper = mock
+
+    when(materialEntityMapper.map(any())) thenReturn Left(error)
     when(materialService.insert(any())) thenReturn IO.unit
 
     val actualException = intercept[ValidationException] {
       tested(
         materialService = materialService,
-        mapToMaterial = mapToMaterial
       ).insert(request)
     }
     assert(actualException == expectedException)
@@ -80,14 +86,11 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
   }
 
   private def tested(
-      materialService: MaterialService[IO] = mock,
-      mapToGetMaterialResponse: MaterialEntity => GetMaterialResponse =
-        (* : MaterialEntity) => mock,
-      mapToMaterial: InsertMaterialRequest => Either[ValidationError, MaterialEntity] =
-        (* : InsertMaterialRequest) => mock
+      materialService: MaterialService[IO] = mock
+  )(using
+      getMaterialResponseMapper: GetMaterialResponseMapper,
+      materialEntityMapper: MaterialEntityMapper
   ): MaterialRoutesGateway[IO] =
     MaterialRoutesGateway.make(
-      materialService = materialService,
-      mapToGetMaterialResponse = mapToGetMaterialResponse,
-      mapToMaterial = mapToMaterial
+      materialService = materialService
     )

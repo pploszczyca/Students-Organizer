@@ -2,8 +2,18 @@ package com.pp.students_organizer_backend.gateways.assignmentType
 
 import cats.effect.Sync
 import cats.syntax.all.{catsSyntaxApplicativeId, toFunctorOps}
-import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
-import com.pp.students_organizer_backend.domain.{AssignmentTypeEntity, AssignmentTypeId}
+import com.pp.students_organizer_backend.domain.errors.{
+  ValidationError,
+  ValidationException
+}
+import com.pp.students_organizer_backend.domain.{
+  AssignmentTypeEntity,
+  AssignmentTypeId
+}
+import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{
+  AssignmentTypeEntityMapper,
+  GetAssignmentTypeResponseMapper
+}
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
@@ -17,22 +27,20 @@ trait AssignmentTypeRoutesGateway[F[_]]:
 
 object AssignmentTypeRoutesGateway:
   def make[F[_]: Sync](
-      assignmentTypeService: AssignmentTypeService[F],
-      mapToGetAssignmentTypeResponse: AssignmentTypeEntity => GetAssignmentTypeResponse,
-      mapToAssignmentType: InsertAssignmentTypeRequest => Either[
-        ValidationError,
-        AssignmentTypeEntity
-      ]
+      assignmentTypeService: AssignmentTypeService[F]
+  )(using
+      assignmentTypeEntityMapper: AssignmentTypeEntityMapper,
+      getAssignmentTypeResponseMapper: GetAssignmentTypeResponseMapper
   ): AssignmentTypeRoutesGateway[F] =
     new AssignmentTypeRoutesGateway[F]:
       override def getAll: F[List[GetAssignmentTypeResponse]] =
         assignmentTypeService.getAll
-          .map(_.map(mapToGetAssignmentTypeResponse))
+          .map(_.map(getAssignmentTypeResponseMapper.map))
 
       override def insert(
           insertAssignmentTypeRequest: InsertAssignmentTypeRequest
       ): F[Unit] =
-        mapToAssignmentType(insertAssignmentTypeRequest) match
+        assignmentTypeEntityMapper.map(insertAssignmentTypeRequest) match
           case Right(value) => assignmentTypeService.insert(value)
           case Left(ValidationError(message)) =>
             throw ValidationException(message)

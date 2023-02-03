@@ -2,8 +2,18 @@ package com.pp.students_organizer_backend.gateways.assignmentType
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
-import com.pp.students_organizer_backend.domain.{AssignmentTypeEntity, AssignmentTypeId}
+import com.pp.students_organizer_backend.domain.errors.{
+  ValidationError,
+  ValidationException
+}
+import com.pp.students_organizer_backend.domain.{
+  AssignmentTypeEntity,
+  AssignmentTypeId
+}
+import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{
+  AssignmentTypeEntityMapper,
+  GetAssignmentTypeResponseMapper
+}
 import com.pp.students_organizer_backend.routes.assignmentType.models.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes.assignmentType.models.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
@@ -16,18 +26,23 @@ import java.util.UUID
 
 class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
   private val assignmentTypeService: AssignmentTypeService[IO] = mock
+  private given getAssignmentTypeResponseMapper: GetAssignmentTypeResponseMapper = mock
+  private given assignmentTypeEntityMapper: AssignmentTypeEntityMapper = mock
+
 
   "ON getAll" should "return all assignment types as response" in {
     val assignmentType = mock[AssignmentTypeEntity]
     val response = mock[GetAssignmentTypeResponse]
-    val mapToGetAssignmentTypeResponse = (* : AssignmentTypeEntity) => response
     val expected = List(response)
 
+    given getAssignmentTypeResponseMapper: GetAssignmentTypeResponseMapper =
+      mock
+
+    when(getAssignmentTypeResponseMapper.map(any())) thenReturn response
     when(assignmentTypeService.getAll) thenReturn IO(List(assignmentType))
 
     val actual = tested(
-      assignmentTypeService = assignmentTypeService,
-      mapToGetAssignmentTypeResponse = mapToGetAssignmentTypeResponse
+      assignmentTypeService = assignmentTypeService
     ).getAll.unsafeRunSync()
 
     assert(actual == expected)
@@ -36,14 +51,14 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
   "ON insert" should "insert new assignment type" in {
     val insertRequest = mock[InsertAssignmentTypeRequest]
     val assignmentType = mock[AssignmentTypeEntity]
-    val mapToAssignmentType =
-      (* : InsertAssignmentTypeRequest) => Right(assignmentType)
 
+    given assignmentTypeEntityMapper: AssignmentTypeEntityMapper = mock
+
+    when(assignmentTypeEntityMapper.map(any())) thenReturn Right(assignmentType)
     when(assignmentTypeService.insert(any())) thenReturn IO.unit
 
     tested(
-      assignmentTypeService = assignmentTypeService,
-      mapToAssignmentType = mapToAssignmentType
+      assignmentTypeService = assignmentTypeService
     ).insert(insertRequest).unsafeRunSync()
 
     verify(assignmentTypeService).insert(assignmentType)
@@ -53,15 +68,16 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
     val insertRequest = mock[InsertAssignmentTypeRequest]
     val errorMessage = "errorMessage"
     val error = ValidationError(errorMessage)
-    val mapToAssignmentType = (* : InsertAssignmentTypeRequest) => Left(error)
     val expectedException = ValidationException(errorMessage)
 
+    given assignmentTypeEntityMapper: AssignmentTypeEntityMapper = mock
+
+    when(assignmentTypeEntityMapper.map(any())) thenReturn Left(error)
     when(assignmentTypeService.insert(any())) thenReturn IO.unit
 
     val actualException = intercept[ValidationException] {
       tested(
-        assignmentTypeService = assignmentTypeService,
-        mapToAssignmentType = mapToAssignmentType
+        assignmentTypeService = assignmentTypeService
       ).insert(insertRequest).unsafeRunSync()
     }
 
@@ -75,24 +91,18 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
     when(assignmentTypeService.remove(any())) thenReturn IO.unit
 
     tested(
-      assignmentTypeService = assignmentTypeService,
+      assignmentTypeService = assignmentTypeService
     ).remove(id)
 
     verify(assignmentTypeService).remove(assignmentTypeId)
   }
 
   private def tested(
-      assignmentTypeService: AssignmentTypeService[IO] = mock,
-      mapToGetAssignmentTypeResponse: AssignmentTypeEntity => GetAssignmentTypeResponse =
-        (* : AssignmentTypeEntity) => mock,
-      mapToAssignmentType: InsertAssignmentTypeRequest => Either[
-        ValidationError,
-        AssignmentTypeEntity
-      ] =
-        (* : InsertAssignmentTypeRequest) => mock
+      assignmentTypeService: AssignmentTypeService[IO] = mock
+  )(using
+      assignmentTypeEntityMapper: AssignmentTypeEntityMapper,
+      getAssignmentTypeResponseMapper: GetAssignmentTypeResponseMapper
   ): AssignmentTypeRoutesGateway[IO] =
     AssignmentTypeRoutesGateway.make(
-      assignmentTypeService = assignmentTypeService,
-      mapToGetAssignmentTypeResponse = mapToGetAssignmentTypeResponse,
-      mapToAssignmentType = mapToAssignmentType
+      assignmentTypeService = assignmentTypeService
     )
