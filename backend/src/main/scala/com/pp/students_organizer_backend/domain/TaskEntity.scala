@@ -1,6 +1,7 @@
 package com.pp.students_organizer_backend.domain
 
 import com.pp.students_organizer_backend.domain.errors.ValidationError
+import com.pp.students_organizer_backend.utils.validators.ValidateEmptyString.*
 
 import java.util.UUID
 
@@ -33,8 +34,9 @@ object TaskId:
 case class TaskName(value: String)
 object TaskName:
   def create(value: String): Either[ValidationError, TaskName] =
-    if (value.isEmpty) Left(ValidationError("Task name can't be empty"))
-    else Right(TaskName(value))
+    value
+      .validateEmptyString("Task name can't be empty")
+      .map(TaskName.apply)
 
 case class TaskIsDone(value: Boolean)
 object TaskIsDone:

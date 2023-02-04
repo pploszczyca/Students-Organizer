@@ -1,6 +1,7 @@
 package com.pp.students_organizer_backend.domain
 
 import com.pp.students_organizer_backend.domain.errors.ValidationError
+import com.pp.students_organizer_backend.utils.validators.ValidateEmptyString.*
 
 import java.util.UUID
 
@@ -29,6 +30,6 @@ object AssignmentTypeId:
 case class AssignmentTypeName(value: String)
 object AssignmentTypeName:
   def create(value: String): Either[ValidationError, AssignmentTypeName] =
-    if (value.isEmpty)
-      Left(ValidationError("Assignment Type name can't be empty"))
-    else Right(AssignmentTypeName(value))
+    value
+      .validateEmptyString("Assignment Type name can't be empty")
+      .map(AssignmentTypeName.apply)

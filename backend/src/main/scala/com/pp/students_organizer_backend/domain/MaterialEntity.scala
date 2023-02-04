@@ -1,6 +1,7 @@
 package com.pp.students_organizer_backend.domain
 
 import com.pp.students_organizer_backend.domain.errors.ValidationError
+import com.pp.students_organizer_backend.utils.validators.ValidateEmptyString.*
 
 import java.util.UUID
 
@@ -40,11 +41,13 @@ case class MaterialId(value: UUID)
 case class MaterialName(value: String)
 object MaterialName:
   def create(value: String): Either[ValidationError, MaterialName] =
-    if (value.isEmpty) Left(ValidationError("Material name can't be empty"))
-    else Right(MaterialName(value))
+    value
+      .validateEmptyString("Material name can't be empty")
+      .map(MaterialName.apply)
 
 case class MaterialUrl(value: String)
 object MaterialUrl:
   def create(value: String): Either[ValidationError, MaterialUrl] =
-    if (value.isEmpty) Left(ValidationError("Material url can't be empty"))
-    else Right(MaterialUrl(value))
+    value
+      .validateEmptyString("Material url can't be empty")
+      .map(MaterialUrl.apply)
