@@ -1,4 +1,4 @@
-package com.pp.students_organizer_backend.routes.assignmentType
+package com.pp.students_organizer_backend.routes
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global

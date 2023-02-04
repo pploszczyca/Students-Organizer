@@ -1,4 +1,4 @@
-package com.pp.students_organizer_backend.routes.material
+package com.pp.students_organizer_backend.routes
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
@@ -51,7 +51,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
     )
   }
 
-  "POST /material" should "insert new material" in {
+  "POST -> /material" should "insert new material" in {
     val jsonRequest =
       json"""{
             "name": "name",
@@ -75,7 +75,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
     )
   }
 
-  "POST /material" should "return error WHEN exception occurs" in {
+  "POST -> /material" should "return error WHEN exception occurs" in {
     val jsonRequest =
       json"""{
             "name": "name",
