@@ -8,20 +8,21 @@ import skunk.codec.uuid.uuid
 object DatabaseCodec:
   object AssignmentType:
     val assignmentTypeId: Codec[AssignmentTypeId] =
-      uuid.imap[AssignmentTypeId](AssignmentTypeId)(_.value)
+      uuid.imap[AssignmentTypeId](AssignmentTypeId.apply)(_.value)
     val assignmentTypeName: Codec[AssignmentTypeName] =
-      varchar.imap[AssignmentTypeName](AssignmentTypeName)(_.value)
+      varchar.imap[AssignmentTypeName](AssignmentTypeName.apply)(_.value)
 
   object Material:
     val materialId: Codec[MaterialId] =
-      uuid.imap[MaterialId](MaterialId)(_.value)
+      uuid.imap[MaterialId](MaterialId.apply)(_.value)
     val materialName: Codec[MaterialName] =
-      varchar.imap[MaterialName](MaterialName)(_.value)
+      varchar.imap[MaterialName](MaterialName.apply)(_.value)
     val materialUrl: Codec[MaterialUrl] =
-      varchar.imap[MaterialUrl](MaterialUrl)(_.value)
+      varchar.imap[MaterialUrl](MaterialUrl.apply)(_.value)
 
   object TaskEntity:
-    val taskId: Codec[TaskId] = uuid.imap[TaskId](TaskId)(_.value)
-    val taskName: Codec[TaskName] = varchar.imap[TaskName](TaskName)(_.value)
+    val taskId: Codec[TaskId] = uuid.imap[TaskId](TaskId.apply)(_.value)
+    val taskName: Codec[TaskName] =
+      varchar.imap[TaskName](TaskName.apply)(_.value)
     val taskIsDone: Codec[TaskIsDone] =
-      bool.imap[TaskIsDone](TaskIsDone)(_.value)
+      bool.imap[TaskIsDone](TaskIsDone.apply)(_.value)

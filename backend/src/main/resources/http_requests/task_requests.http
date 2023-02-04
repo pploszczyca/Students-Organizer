@@ -1,0 +1,14 @@
+GET localhost:8080/task
+
+###
+
+POST localhost:8080/task
+Content-Type: application/json
+
+{
+  "name": "New Task",
+  "isDone": true
+}
+
+###
+DELETE localhost:8080/task/95441c4a-ece1-4828-9179-006b587ead36
