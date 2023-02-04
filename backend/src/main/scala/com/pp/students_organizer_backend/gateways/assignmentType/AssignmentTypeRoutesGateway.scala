@@ -17,6 +17,7 @@ import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{
 import com.pp.students_organizer_backend.routes_models.assignmentType.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes_models.assignmentType.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
+import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 
 import java.util.UUID
 
@@ -40,10 +41,9 @@ object AssignmentTypeRoutesGateway:
       override def insert(
           insertAssignmentTypeRequest: InsertAssignmentTypeRequest
       ): F[Unit] =
-        assignmentTypeEntityMapper.map(insertAssignmentTypeRequest) match
-          case Right(value) => assignmentTypeService.insert(value)
-          case Left(ValidationError(message)) =>
-            throw ValidationException(message)
+        assignmentTypeEntityMapper
+          .map(insertAssignmentTypeRequest)
+          .mapWithNoError(assignmentTypeService.insert)
 
       override def remove(assignmentTypeId: UUID): F[Unit] =
         assignmentTypeService

@@ -8,6 +8,7 @@ import com.pp.students_organizer_backend.gateways.task.mappers.{GetTaskResponseM
 import com.pp.students_organizer_backend.routes_models.task.request.InsertTaskRequest
 import com.pp.students_organizer_backend.routes_models.task.response.GetTaskResponse
 import com.pp.students_organizer_backend.services.TaskService
+import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 
 import java.util.UUID
 
@@ -29,10 +30,9 @@ object TaskRoutesGateway:
         .map(_.map(getTaskResponseMapper.map))
 
     override def insert(request: InsertTaskRequest): F[Unit] =
-      taskEntityMapper.map(request) match
-        case Right(value) => taskService.insert(value)
-        case Left(ValidationError(message)) =>
-          throw ValidationException(message)
+      taskEntityMapper
+        .map(request)
+        .mapWithNoError(taskService.insert)
 
     override def remove(taskId: UUID): F[Unit] =
       taskService

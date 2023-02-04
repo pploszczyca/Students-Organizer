@@ -14,6 +14,7 @@ import com.pp.students_organizer_backend.gateways.material.mappers.{
 import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes_models.material.response.GetMaterialResponse
 import com.pp.students_organizer_backend.services.MaterialService
+import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 
 import java.util.UUID
 
@@ -35,10 +36,9 @@ object MaterialRoutesGateway:
           .map(_.map(getMaterialResponseMapper.map))
 
       override def insert(request: InsertMaterialRequest): F[Unit] =
-        materialEntityMapper.map(request) match
-          case Right(value) => materialService.insert(value)
-          case Left(ValidationError(message)) =>
-            throw ValidationException(message)
+        materialEntityMapper
+          .map(request)
+          .mapWithNoError(materialService.insert)
 
       override def remove(materialId: UUID): F[Unit] =
         materialService
