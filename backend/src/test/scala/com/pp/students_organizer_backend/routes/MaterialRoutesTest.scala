@@ -55,11 +55,13 @@ class MaterialRoutesTest extends AnyFlatSpec:
     val jsonRequest =
       json"""{
             "name": "name",
-            "url":  "www.test.com"
+            "url":  "www.test.com",
+            "assignmentId": "817ec3ac-23eb-421f-a898-8debfbc54b46"
           }"""
     val request = InsertMaterialRequest(
       name = "name",
-      url = "www.test.com"
+      url = "www.test.com",
+      assignmentId = "817ec3ac-23eb-421f-a898-8debfbc54b46",
     )
 
     when(gateway.insert(any())) thenReturn IO.unit
@@ -79,12 +81,15 @@ class MaterialRoutesTest extends AnyFlatSpec:
     val jsonRequest =
       json"""{
             "name": "name",
-            "url":  "www.test.com"
+            "url":  "www.test.com",
+            "assignmentId": "817ec3ac-23eb-421f-a898-8debfbc54b46"
           }"""
     val request = InsertMaterialRequest(
       name = "name",
-      url = "www.test.com"
+      url = "www.test.com",
+      assignmentId ="817ec3ac-23eb-421f-a898-8debfbc54b46",
     )
+
     val errorMessage = "error message"
     val exception = ValidationException(errorMessage)
     val expectedResponse =

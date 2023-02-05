@@ -7,14 +7,14 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 case class AssignmentEntity(
-                             id: AssignmentId,
-                             name: AssignmentName,
-                             description: AssignmentDescription,
-                             assignmentType: AssignmentTypeEntity,
-                             status: AssignmentStatus,
-                             endDate: AssignmentEndDate,
-                             tasks: List[TaskEntity] = List.empty,
-                             materials: List[MaterialEntity] = List.empty
+    id: AssignmentId,
+    name: AssignmentName,
+    description: AssignmentDescription,
+    assignmentType: AssignmentTypeEntity,
+    status: AssignmentStatus,
+    endDate: AssignmentEndDate,
+    tasks: List[TaskEntity] = List.empty,
+    materials: List[MaterialEntity] = List.empty
 )
 
 object AssignmentEntity:
@@ -48,6 +48,9 @@ case class AssignmentId(value: UUID)
 object AssignmentId:
   def create: Either[ValidationError, AssignmentId] =
     Right(AssignmentId(UUID.randomUUID()))
+
+  def create(value: String): Either[ValidationError, AssignmentId] =
+    Right(AssignmentId(UUID.fromString(value)))
 
 case class AssignmentName(value: String)
 object AssignmentName:

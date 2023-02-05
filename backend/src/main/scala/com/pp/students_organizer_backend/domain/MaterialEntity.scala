@@ -8,14 +8,16 @@ import java.util.UUID
 case class MaterialEntity(
     id: MaterialId,
     name: MaterialName,
-    url: MaterialUrl
+    url: MaterialUrl,
+    assignmentId: AssignmentId
 )
 
 object MaterialEntity:
   def create(
       id: UUID,
       name: String,
-      url: String
+      url: String,
+      assignmentId: AssignmentId
   ): Either[ValidationError, MaterialEntity] =
     for
       materialName <- MaterialName.create(name)
@@ -23,17 +25,20 @@ object MaterialEntity:
     yield MaterialEntity(
       id = MaterialId(id),
       name = materialName,
-      url = materialUrl
+      url = materialUrl,
+      assignmentId = assignmentId
     )
 
   def create(
       name: String,
-      url: String
+      url: String,
+      assignmentId: AssignmentId
   ): Either[ValidationError, MaterialEntity] =
     create(
       id = UUID.randomUUID(),
       name = name,
-      url = url
+      url = url,
+      assignmentId = assignmentId,
     )
 
 case class MaterialId(value: UUID)

@@ -27,7 +27,7 @@ object DatabaseCodec:
     val taskIsDone: Codec[TaskIsDone] =
       bool.imap[TaskIsDone](TaskIsDone.apply)(_.value)
 
-  object AssignmentEntity:
+  object Assignment:
     val assignmentId: Codec[AssignmentId] =
       uuid.imap[AssignmentId](AssignmentId.apply)(_.value)
     val assignmentName: Codec[AssignmentName] =

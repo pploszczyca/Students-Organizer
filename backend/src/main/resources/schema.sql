@@ -4,20 +4,6 @@ CREATE TABLE public.assignment_type
     name VARCHAR NOT NULL
 );
 
-CREATE TABLE public.material
-(
-    id   UUID    NOT NULL PRIMARY KEY,
-    name VARCHAR NOT NULL,
-    url  VARCHAR NOT NULL
-);
-
-CREATE TABLE public.task
-(
-    id      UUID    NOT NULL PRIMARY KEY,
-    name    VARCHAR NOT NULL,
-    is_done BOOL    NOT NULL
-);
-
 CREATE TABLE public.assignment
 (
     id                 UUID      NOT NULL PRIMARY KEY,
@@ -31,30 +17,26 @@ CREATE TABLE public.assignment
             REFERENCES assignment_type (id)
 );
 
-CREATE TABLE public.assignment_task
+CREATE TABLE public.material
 (
+    id   UUID    NOT NULL PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    url  VARCHAR NOT NULL,
     assignment_id UUID NOT NULL,
-    task_id       UUID NOT NULL,
 
     CONSTRAINT fk_assignment_id
         FOREIGN KEY (assignment_id)
-            REFERENCES assignment (id),
-
-    CONSTRAINT fk_task_id
-        FOREIGN KEY (task_id)
-            REFERENCES task (id)
+            REFERENCES assignment (id)
 );
 
-CREATE TABLE public.assignment_materials
+CREATE TABLE public.task
 (
+    id      UUID    NOT NULL PRIMARY KEY,
+    name    VARCHAR NOT NULL,
+    is_done BOOL    NOT NULL,
     assignment_id UUID NOT NULL,
-    material_id   UUID NOT NULL,
 
     CONSTRAINT fk_assignment_id
         FOREIGN KEY (assignment_id)
-            REFERENCES assignment (id),
-
-    CONSTRAINT fk_material_id
-        FOREIGN KEY (material_id)
-            REFERENCES material (id)
+            REFERENCES assignment (id)
 );
