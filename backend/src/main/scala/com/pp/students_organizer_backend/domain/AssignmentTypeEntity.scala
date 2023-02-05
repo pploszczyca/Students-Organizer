@@ -14,10 +14,10 @@ object AssignmentTypeEntity:
   def create(
       name: String
   ): Either[ValidationError, AssignmentTypeEntity] =
-    for {
+    for
       assignmentTypeId <- AssignmentTypeId.create()
       assignmentTypeName <- AssignmentTypeName.create(name)
-    } yield AssignmentTypeEntity(
+    yield AssignmentTypeEntity(
       id = assignmentTypeId,
       name = assignmentTypeName
     )

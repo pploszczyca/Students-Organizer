@@ -16,11 +16,11 @@ object TaskEntity:
       name: String,
       isDone: Boolean
   ): Either[ValidationError, TaskEntity] =
-    for {
+    for
       taskId <- TaskId.create()
       taskName <- TaskName.create(name)
       taskIsDone <- TaskIsDone.create(isDone)
-    } yield TaskEntity(
+    yield TaskEntity(
       id = taskId,
       name = taskName,
       isDone = taskIsDone

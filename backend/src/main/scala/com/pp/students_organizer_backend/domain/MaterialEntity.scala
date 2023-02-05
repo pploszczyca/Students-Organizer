@@ -17,10 +17,10 @@ object MaterialEntity:
       name: String,
       url: String
   ): Either[ValidationError, MaterialEntity] =
-    for {
+    for
       materialName <- MaterialName.create(name)
       materialUrl <- MaterialUrl.create(url)
-    } yield MaterialEntity(
+    yield MaterialEntity(
       id = MaterialId(id),
       name = materialName,
       url = materialUrl
