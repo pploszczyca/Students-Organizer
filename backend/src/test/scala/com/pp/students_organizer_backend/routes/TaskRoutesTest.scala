@@ -52,11 +52,13 @@ class TaskRoutesTest extends AnyFlatSpec:
     val jsonRequest =
       json"""{
             "name": "task name",
-            "isDone": true
+            "isDone": true,
+            "assignmentId": "817ec3ac-23eb-421f-a898-8debfbc54b46"
           }"""
     val request = InsertTaskRequest(
       name = "task name",
-      isDone = true
+      isDone = true,
+      assignmentId = "817ec3ac-23eb-421f-a898-8debfbc54b46"
     )
 
     when(gateway.insert(any())) thenReturn IO.unit
@@ -76,11 +78,13 @@ class TaskRoutesTest extends AnyFlatSpec:
     val jsonRequest =
       json"""{
             "name": "task name",
-            "isDone": true
+            "isDone": true,
+            "assignmentId": "817ec3ac-23eb-421f-a898-8debfbc54b46"
           }"""
     val request = InsertTaskRequest(
       name = "task name",
-      isDone = true
+      isDone = true,
+      assignmentId = "817ec3ac-23eb-421f-a898-8debfbc54b46"
     )
     val errorMessage = "error message"
     val exception = ValidationException(errorMessage)

@@ -8,13 +8,15 @@ import java.util.UUID
 case class TaskEntity(
     id: TaskId,
     name: TaskName,
-    isDone: TaskIsDone
+    isDone: TaskIsDone,
+    assignmentId: AssignmentId,
 )
 
 object TaskEntity:
   def create(
       name: String,
-      isDone: Boolean
+      isDone: Boolean,
+      assignmentId: AssignmentId,
   ): Either[ValidationError, TaskEntity] =
     for
       taskId <- TaskId.create()
@@ -23,7 +25,8 @@ object TaskEntity:
     yield TaskEntity(
       id = taskId,
       name = taskName,
-      isDone = taskIsDone
+      isDone = taskIsDone,
+      assignmentId = assignmentId,
     )
 
 case class TaskId(value: UUID)
