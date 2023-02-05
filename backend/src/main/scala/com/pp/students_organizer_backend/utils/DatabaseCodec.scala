@@ -2,7 +2,7 @@ package com.pp.students_organizer_backend.utils
 
 import com.pp.students_organizer_backend.domain.*
 import skunk.Codec
-import skunk.codec.all.{bool, varchar}
+import skunk.codec.all.{bool, timestamp, varchar}
 import skunk.codec.uuid.uuid
 
 object DatabaseCodec:
@@ -26,3 +26,17 @@ object DatabaseCodec:
       varchar.imap[TaskName](TaskName.apply)(_.value)
     val taskIsDone: Codec[TaskIsDone] =
       bool.imap[TaskIsDone](TaskIsDone.apply)(_.value)
+
+  object AssignmentEntity:
+    val assignmentId: Codec[AssignmentId] =
+      uuid.imap[AssignmentId](AssignmentId.apply)(_.value)
+    val assignmentName: Codec[AssignmentName] =
+      varchar.imap[AssignmentName](AssignmentName.apply)(_.value)
+    val assignmentDescription: Codec[AssignmentDescription] =
+      varchar.imap[AssignmentDescription](AssignmentDescription.apply)(_.value)
+    val assignmentStatus: Codec[AssignmentStatus] =
+      varchar.imap[AssignmentStatus](AssignmentStatus.valueOf)(_.toString)
+    val assignmentEndDateTimestamp: Codec[AssignmentEndDateTimestamp] =
+      timestamp.imap[AssignmentEndDateTimestamp](
+        AssignmentEndDateTimestamp.apply
+      )(_.value)

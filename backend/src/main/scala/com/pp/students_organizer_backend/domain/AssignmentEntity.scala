@@ -2,8 +2,8 @@ package com.pp.students_organizer_backend.domain
 
 import com.pp.students_organizer_backend.domain.errors.ValidationError
 import com.pp.students_organizer_backend.utils.validators.ValidateEmptyString.*
-import com.pp.students_organizer_backend.utils.validators.ValidateTimestamp.*
 
+import java.time.LocalDateTime
 import java.util.UUID
 
 case class AssignmentEntity(
@@ -23,7 +23,7 @@ object AssignmentEntity:
               description: String,
               assignmentType: AssignmentTypeEntity,
               status: String,
-              endDateTimestamp: Long,
+              endDateTimestamp: LocalDateTime,
               tasks: List[TaskEntity] = List.empty,
               materials: List[MaterialEntity] = List.empty
             ): Either[ValidationError, AssignmentEntity] =
@@ -66,9 +66,7 @@ object AssignmentDescription:
 enum AssignmentStatus:
   case TO_DO, IN_PROGRESS, DONE
 
-case class AssignmentEndDateTimestamp(value: Long)
+case class AssignmentEndDateTimestamp(value: LocalDateTime)
 object AssignmentEndDateTimestamp:
-  def crate(value: Long): Either[ValidationError, AssignmentEndDateTimestamp] =
-    value
-      .validateTimestamp("Assignment end date timestamp can't be empty")
-      .map(AssignmentEndDateTimestamp.apply)
+  def crate(value: LocalDateTime): Either[ValidationError, AssignmentEndDateTimestamp] =
+    Right(AssignmentEndDateTimestamp(value))
