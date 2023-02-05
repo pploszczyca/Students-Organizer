@@ -7,41 +7,41 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 case class AssignmentEntity(
-    id: AssignmentId,
-    name: AssignmentName,
-    description: AssignmentDescription,
-    assignmentType: AssignmentTypeEntity,
-    status: AssignmentStatus,
-    endDateTimestamp: AssignmentEndDateTimestamp,
-    tasks: List[TaskEntity] = List.empty,
-    materials: List[MaterialEntity] = List.empty
+                             id: AssignmentId,
+                             name: AssignmentName,
+                             description: AssignmentDescription,
+                             assignmentType: AssignmentTypeEntity,
+                             status: AssignmentStatus,
+                             endDate: AssignmentEndDate,
+                             tasks: List[TaskEntity] = List.empty,
+                             materials: List[MaterialEntity] = List.empty
 )
 
 object AssignmentEntity:
   def create(
-              name: String,
-              description: String,
-              assignmentType: AssignmentTypeEntity,
-              status: String,
-              endDateTimestamp: LocalDateTime,
-              tasks: List[TaskEntity] = List.empty,
-              materials: List[MaterialEntity] = List.empty
-            ): Either[ValidationError, AssignmentEntity] =
+      name: String,
+      description: String,
+      assignmentType: AssignmentTypeEntity,
+      status: String,
+      endDate: LocalDateTime,
+      tasks: List[TaskEntity] = List.empty,
+      materials: List[MaterialEntity] = List.empty
+  ): Either[ValidationError, AssignmentEntity] =
     for
       assignmentId <- AssignmentId.create
       assignmentName <- AssignmentName.create(name)
       assignmentDescription <- AssignmentDescription.create(description)
       assignmentStatus = AssignmentStatus.valueOf(status)
-      assignmentEndDateTimestamp <- AssignmentEndDateTimestamp.crate(endDateTimestamp)
+      assignmentEndDateTimestamp <- AssignmentEndDate.crate(endDate)
     yield AssignmentEntity(
       id = assignmentId,
       name = assignmentName,
       description = assignmentDescription,
       assignmentType = assignmentType,
       status = assignmentStatus,
-      endDateTimestamp = assignmentEndDateTimestamp,
+      endDate = assignmentEndDateTimestamp,
       tasks = tasks,
-      materials = materials,
+      materials = materials
     )
 
 case class AssignmentId(value: UUID)
@@ -66,7 +66,9 @@ object AssignmentDescription:
 enum AssignmentStatus:
   case TO_DO, IN_PROGRESS, DONE
 
-case class AssignmentEndDateTimestamp(value: LocalDateTime)
-object AssignmentEndDateTimestamp:
-  def crate(value: LocalDateTime): Either[ValidationError, AssignmentEndDateTimestamp] =
-    Right(AssignmentEndDateTimestamp(value))
+case class AssignmentEndDate(value: LocalDateTime)
+object AssignmentEndDate:
+  def crate(
+      value: LocalDateTime
+  ): Either[ValidationError, AssignmentEndDate] =
+    Right(AssignmentEndDate(value))

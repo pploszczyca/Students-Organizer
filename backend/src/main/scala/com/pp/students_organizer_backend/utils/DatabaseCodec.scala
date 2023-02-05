@@ -36,7 +36,7 @@ object DatabaseCodec:
       varchar.imap[AssignmentDescription](AssignmentDescription.apply)(_.value)
     val assignmentStatus: Codec[AssignmentStatus] =
       varchar.imap[AssignmentStatus](AssignmentStatus.valueOf)(_.toString)
-    val assignmentEndDateTimestamp: Codec[AssignmentEndDateTimestamp] =
-      timestamp.imap[AssignmentEndDateTimestamp](
-        AssignmentEndDateTimestamp.apply
+    val assignmentEndDate: Codec[AssignmentEndDate] =
+      timestamp.imap[AssignmentEndDate](
+        AssignmentEndDate.apply
       )(_.value)
