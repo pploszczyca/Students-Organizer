@@ -8,12 +8,12 @@ import java.util.UUID
 case class SubjectEntity(
     id: SubjectId,
     name: SubjectName,
-    assignments: List[AssignmentEntity]
+    termId: TermId,
 )
 object SubjectEntity:
   def create(
       name: String,
-      assignments: List[AssignmentEntity] = List.empty
+      termId: TermId,
   ): Either[ValidationError, SubjectEntity] =
     for
       subjectId <- SubjectId.create
@@ -21,7 +21,7 @@ object SubjectEntity:
     yield SubjectEntity(
       id = subjectId,
       name = subjectName,
-      assignments = assignments
+      termId = termId,
     )
 
 case class SubjectId(value: UUID)

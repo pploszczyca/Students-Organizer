@@ -9,13 +9,11 @@ case class TermEntity(
     id: TermId,
     number: TermNumber,
     year: TermYear,
-    subjects: List[SubjectEntity]
 )
 object TermEntity:
   def create(
       number: Int,
       year: Int,
-      subjects: List[SubjectEntity] = List.empty
   ): Either[ValidationError, TermEntity] =
     for
       termId <- TermId.create
@@ -25,7 +23,6 @@ object TermEntity:
       id = termId,
       number = termNumber,
       year = termYear,
-      subjects = subjects
     )
 
 case class TermId(value: UUID)

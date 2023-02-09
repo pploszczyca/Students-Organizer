@@ -13,8 +13,7 @@ case class AssignmentEntity(
     assignmentType: AssignmentTypeEntity,
     status: AssignmentStatus,
     endDate: AssignmentEndDate,
-    tasks: List[TaskEntity] = List.empty,
-    materials: List[MaterialEntity] = List.empty
+    subjectId: SubjectId,
 )
 
 object AssignmentEntity:
@@ -24,8 +23,7 @@ object AssignmentEntity:
       assignmentType: AssignmentTypeEntity,
       status: String,
       endDate: LocalDateTime,
-      tasks: List[TaskEntity] = List.empty,
-      materials: List[MaterialEntity] = List.empty
+      subjectId: SubjectId,
   ): Either[ValidationError, AssignmentEntity] =
     for
       assignmentId <- AssignmentId.create
@@ -40,8 +38,7 @@ object AssignmentEntity:
       assignmentType = assignmentType,
       status = assignmentStatus,
       endDate = assignmentEndDateTimestamp,
-      tasks = tasks,
-      materials = materials
+      subjectId = subjectId,
     )
 
 case class AssignmentId(value: UUID)
