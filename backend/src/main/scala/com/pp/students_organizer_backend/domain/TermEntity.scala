@@ -9,11 +9,13 @@ case class TermEntity(
     id: TermId,
     number: TermNumber,
     year: TermYear,
+    studentId: StudentId,
 )
 object TermEntity:
   def create(
       number: Int,
       year: Int,
+      studentId: StudentId
   ): Either[ValidationError, TermEntity] =
     for
       termId <- TermId.create
@@ -23,6 +25,7 @@ object TermEntity:
       id = termId,
       number = termNumber,
       year = termYear,
+      studentId = studentId,
     )
 
 case class TermId(value: UUID)

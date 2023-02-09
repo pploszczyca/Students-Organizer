@@ -40,3 +40,13 @@ object DatabaseCodec:
       timestamp.imap[AssignmentEndDate](
         AssignmentEndDate.apply
       )(_.value)
+      
+  object Subject:
+    val subjectId: Codec[SubjectId] =
+      uuid.imap[SubjectId](SubjectId.apply)(_.value)
+    val subjectName: Codec[SubjectName] =
+      varchar.imap[SubjectName](SubjectName.apply)(_.value)
+      
+  object Student:
+    val studentId: Codec[StudentId] =
+      uuid.imap[StudentId](StudentId.apply)(_.value)
