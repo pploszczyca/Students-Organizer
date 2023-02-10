@@ -1,6 +1,7 @@
 package com.pp.students_organizer_backend.gateways
 
 import cats.effect.Async
+import com.pp.students_organizer_backend.gateways.assignment.AssignmentRoutesGateway
 import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
 import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{
   AssignmentTypeEntityMapper,
@@ -29,7 +30,14 @@ class Gateways[F[_]: Async](services: Services[F]):
       materialService = services.material
     )
 
-  lazy val taskRoues: TaskRoutesGateway[F] =
+  lazy val taskRoutes: TaskRoutesGateway[F] =
     TaskRoutesGateway.make[F](
       taskService = services.task
+    )
+
+  lazy val assignmentRoutes: AssignmentRoutesGateway[F] =
+    AssignmentRoutesGateway.make[F](
+      assignmentService = services.assignment,
+      taskService = services.task,
+      materialService = services.material
     )

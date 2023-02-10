@@ -27,7 +27,7 @@ class Routes[F[_]: Async](gateways: Gateways[F]):
 
   lazy val task: TaskRoutes[F] =
     TaskRoutes[F](
-      gateway = gateways.taskRoues
+      gateway = gateways.taskRoutes
     )
 
   lazy val allRoutes: HttpRoutes[F] =

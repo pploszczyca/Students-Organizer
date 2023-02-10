@@ -13,7 +13,7 @@ case class AssignmentEntity(
     assignmentTypeId: AssignmentTypeId,
     status: AssignmentStatus,
     endDate: AssignmentEndDate,
-    subjectId: SubjectId,
+    subjectId: SubjectId
 )
 
 object AssignmentEntity:
@@ -23,10 +23,50 @@ object AssignmentEntity:
       assignmentTypeId: AssignmentTypeId,
       status: String,
       endDate: LocalDateTime,
-      subjectId: SubjectId,
+      subjectId: SubjectId
   ): Either[ValidationError, AssignmentEntity] =
     for
       assignmentId <- AssignmentId.create
+      assignment <- create(
+        assignmentId = assignmentId,
+        name = name,
+        description = description,
+        assignmentTypeId = assignmentTypeId,
+        status = status,
+        endDate = endDate,
+        subjectId = subjectId
+      )
+    yield assignment
+
+  def create(
+      assignmentUUID: UUID,
+      name: String,
+      description: String,
+      assignmentTypeId: AssignmentTypeId,
+      status: String,
+      endDate: LocalDateTime,
+      subjectId: SubjectId
+  ): Either[ValidationError, AssignmentEntity] =
+    create(
+      assignmentId = AssignmentId(assignmentUUID),
+      name = name,
+      description = description,
+      assignmentTypeId = assignmentTypeId,
+      status = status,
+      endDate = endDate,
+      subjectId = subjectId
+    )
+
+  private def create(
+      assignmentId: AssignmentId,
+      name: String,
+      description: String,
+      assignmentTypeId: AssignmentTypeId,
+      status: String,
+      endDate: LocalDateTime,
+      subjectId: SubjectId
+  ): Either[ValidationError, AssignmentEntity] =
+    for
       assignmentName <- AssignmentName.create(name)
       assignmentDescription <- AssignmentDescription.create(description)
       assignmentStatus = AssignmentStatus.valueOf(status)
@@ -38,7 +78,7 @@ object AssignmentEntity:
       assignmentTypeId = assignmentTypeId,
       status = assignmentStatus,
       endDate = assignmentEndDateTimestamp,
-      subjectId = subjectId,
+      subjectId = subjectId
     )
 
 case class AssignmentId(value: UUID)
