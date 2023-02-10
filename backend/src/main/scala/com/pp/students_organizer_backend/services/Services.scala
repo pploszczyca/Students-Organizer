@@ -18,3 +18,6 @@ class Services[F[_]: Concurrent](database: Resource[F, Session[F]]):
 
   lazy val task: TaskService[F] =
     TaskService.make(database)
+
+  lazy val assignment: AssignmentService[F] =
+    AssignmentService.make(database)

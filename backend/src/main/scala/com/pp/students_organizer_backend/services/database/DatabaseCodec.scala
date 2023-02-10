@@ -1,4 +1,4 @@
-package com.pp.students_organizer_backend.utils
+package com.pp.students_organizer_backend.services.database
 
 import com.pp.students_organizer_backend.domain.*
 import skunk.Codec

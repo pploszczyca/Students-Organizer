@@ -4,11 +4,8 @@ import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.{toFlatMapOps, toFunctorOps}
 import com.pp.students_organizer_backend.domain.{TaskEntity, TaskId}
-import com.pp.students_organizer_backend.utils.DatabaseCodec.TaskEntity.{
-  taskId,
-  taskIsDone,
-  taskName
-}
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Assignment.assignmentId
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.TaskEntity.{taskId, taskIsDone, taskName}
 import skunk.implicits.sql
 import skunk.{Command, Query, Session, Void, ~}
 
@@ -46,11 +43,11 @@ object TaskService:
   private object ServiceSQL:
     val getAllQuery: Query[Void, TaskEntity] =
       sql"SELECT id, name, is_done FROM task"
-        .query(taskId ~ taskName ~ taskIsDone)
+        .query(taskId ~ taskName ~ taskIsDone ~ assignmentId)
         .gmap[TaskEntity]
 
     val insertCommand: Command[TaskEntity] =
-      sql"INSERT INTO task (id, name, is_done) VALUES ($taskId, $taskName, $taskIsDone)".command
+      sql"INSERT INTO task (id, name, is_done, assignment_id) VALUES ($taskId, $taskName, $taskIsDone, $assignmentId)".command
         .gcontramap[TaskEntity]
 
     val removeCommand: Command[TaskId] =

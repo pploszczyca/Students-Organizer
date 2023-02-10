@@ -8,10 +8,10 @@ import com.pp.students_organizer_backend.domain.{
   AssignmentId,
   StudentId
 }
-import com.pp.students_organizer_backend.utils.DatabaseCodec.Assignment.*
-import com.pp.students_organizer_backend.utils.DatabaseCodec.AssignmentType.assignmentTypeId
-import com.pp.students_organizer_backend.utils.DatabaseCodec.Student.studentId
-import com.pp.students_organizer_backend.utils.DatabaseCodec.Subject.subjectId
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Assignment.*
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.AssignmentType.assignmentTypeId
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Student.studentId
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Subject.subjectId
 import skunk.implicits.{sql, toIdOps}
 import skunk.{Command, Query, Session, ~}
 
@@ -22,6 +22,7 @@ trait AssignmentService[F[_]]:
       studentId: StudentId
   ): F[Option[AssignmentEntity]]
   def insert(assignmentEntity: AssignmentEntity): F[Unit]
+  def update(assignmentEntity: AssignmentEntity): F[Unit]
   def remove(assignmentId: AssignmentId): F[Unit]
 
 object AssignmentService:
@@ -58,6 +59,14 @@ object AssignmentService:
         database.use { session =>
           session
             .prepare(ServiceSQL.insertCommand)
+            .flatMap(_.execute(assignmentEntity))
+            .void
+        }
+
+      override def update(assignmentEntity: AssignmentEntity): F[Unit] =
+        database.use { session =>
+          session
+            .prepare(ServiceSQL.updateCommand)
             .flatMap(_.execute(assignmentEntity))
             .void
         }
@@ -104,6 +113,22 @@ object AssignmentService:
            VALUES ($assignmentId, $assignmentName, $assignmentDescription, $assignmentTypeId, $assignmentStatus, $assignmentEndDate, $subjectId)
          """.command
         .gcontramap[AssignmentEntity]
+
+    val updateCommand: Command[AssignmentEntity] =
+      sql"""
+           UPDATE assignment
+            SET name = $assignmentName,
+                description = $assignmentDescription,
+                assignment_type_id = $assignmentTypeId,
+                status = $assignmentStatus,
+                end_date = $assignmentEndDate,
+                subject_id = $subjectId
+            WHERE id = $assignmentId
+         """.command
+        .contramap { case assignment: AssignmentEntity =>
+          assignment.name ~ assignment.description ~ assignment.assignmentTypeId ~ assignment.status
+            ~ assignment.endDate ~ assignment.subjectId ~ assignment.id
+        }
 
     val removeCommand: Command[AssignmentId] =
       sql"DELETE FROM assignment WHERE id = $assignmentId".command

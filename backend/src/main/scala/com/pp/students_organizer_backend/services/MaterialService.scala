@@ -4,8 +4,8 @@ import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.{toFlatMapOps, toFunctorOps}
 import com.pp.students_organizer_backend.domain.{AssignmentId, MaterialEntity, MaterialId}
-import com.pp.students_organizer_backend.utils.DatabaseCodec.Material.{materialId, materialName, materialUrl}
-import com.pp.students_organizer_backend.utils.DatabaseCodec.Assignment.assignmentId
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Material.{materialId, materialName, materialUrl}
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Assignment.assignmentId
 import skunk.codec.all.{int4, uuid, varchar}
 import skunk.implicits.{sql, toIdOps}
 import skunk.{Command, Query, Session, Void, ~}
