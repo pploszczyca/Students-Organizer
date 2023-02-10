@@ -3,15 +3,25 @@ package com.pp.students_organizer_backend.services
 import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.{toFlatMapOps, toFunctorOps}
-import com.pp.students_organizer_backend.domain.{AssignmentId, MaterialEntity, MaterialId}
-import com.pp.students_organizer_backend.services.database.DatabaseCodec.Material.{materialId, materialName, materialUrl}
+import com.pp.students_organizer_backend.domain.{
+  AssignmentId,
+  MaterialEntity,
+  MaterialId,
+  StudentId
+}
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.Assignment.assignmentId
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Material.{
+  materialId,
+  materialName,
+  materialUrl
+}
 import skunk.codec.all.{int4, uuid, varchar}
 import skunk.implicits.{sql, toIdOps}
 import skunk.{Command, Query, Session, Void, ~}
 
 trait MaterialService[F[_]]:
   def getAll: F[List[MaterialEntity]]
+  def getAllBy(assignmentId: AssignmentId): F[List[MaterialEntity]]
   def insert(material: MaterialEntity): F[Unit]
   def remove(materialId: MaterialId): F[Unit]
 
@@ -23,6 +33,15 @@ object MaterialService:
       override def getAll: F[List[MaterialEntity]] =
         database.use { session =>
           session.execute(ServiceSQL.getAllQuery)
+        }
+
+      override def getAllBy(
+          assignmentId: AssignmentId
+      ): F[List[MaterialEntity]] =
+        database.use { session =>
+          session
+            .prepare(ServiceSQL.getAllByAssignmentIdQuery)
+            .flatMap(_.stream(assignmentId, 1024).compile.toList)
         }
 
       override def insert(material: MaterialEntity): F[Unit] =
@@ -43,7 +62,12 @@ object MaterialService:
 
   private object ServiceSQL:
     val getAllQuery: Query[Void, MaterialEntity] =
-      sql"SELECT id, name, url FROM material"
+      sql"SELECT id, name, url, assignment_id FROM material"
+        .query(materialId ~ materialName ~ materialUrl ~ assignmentId)
+        .gmap[MaterialEntity]
+
+    val getAllByAssignmentIdQuery: Query[AssignmentId, MaterialEntity] =
+      sql"SELECT id, name, url, assignment_id FROM material WHERE assignment_id = $assignmentId"
         .query(materialId ~ materialName ~ materialUrl ~ assignmentId)
         .gmap[MaterialEntity]
 
