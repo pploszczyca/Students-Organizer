@@ -6,7 +6,6 @@ import java.util.UUID
 case class GetAssignmentsResponse(
     id: UUID,
     name: String,
-    description: String,
     assignmentTypeId: UUID,
     status: String,
     endDate: LocalDateTime,
