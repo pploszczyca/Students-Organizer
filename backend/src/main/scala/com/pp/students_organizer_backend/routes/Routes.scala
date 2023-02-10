@@ -30,5 +30,10 @@ class Routes[F[_]: Async](gateways: Gateways[F]):
       gateway = gateways.taskRoutes
     )
 
+  lazy val assignment: AssignmentRoutes[F] =
+    AssignmentRoutes[F](
+      gateway = gateways.assignmentRoutes
+    )
+
   lazy val allRoutes: HttpRoutes[F] =
-    assignmentType() <+> material() <+> task()
+    assignmentType() <+> material() <+> task() <+> assignment()

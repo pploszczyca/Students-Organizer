@@ -58,7 +58,7 @@ object AssignmentRoutesGateway:
               tasks = tasks,
               materials = materials
             )
-          case None => throw AssignmentNotFoundException(assignmentUUID)
+          case None => throw AssignmentNotFoundException
 
       override def insert(request: InsertAssignmentRequest): F[Unit] =
         assignmentEntityMapper
