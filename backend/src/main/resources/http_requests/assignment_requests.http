@@ -1,0 +1,37 @@
+###
+GET localhost:8080/assignment/61b314ce-a9e7-11ed-afa1-0242ac120002
+Content-Type: application/json
+
+###
+GET localhost:8080/assignment/61b314ce-a9e7-11ed-afa1-0242ac120002/a1e1f1e1-307f-44d7-a6b8-3fa3ccf1e5ca
+Content-Type: application/json
+
+###
+POST localhost:8080/assignment
+Content-Type: application/json
+
+{
+  "name": "Learn for Test 1",
+  "description": "It's reeeally hard :(",
+  "assignmentTypeId": "c0b071ba-a9e7-11ed-afa1-0242ac120002",
+  "status": "TO_DO",
+  "endDate": "2023-02-11T22:08:28.097832",
+  "subjectId": "a1e9f512-a9e7-11ed-afa1-0242ac120002"
+}
+
+###
+PUT localhost:8080/assignment
+Content-Type: application/json
+
+{
+  "id": "a1e1f1e1-307f-44d7-a6b8-3fa3ccf1e5ca",
+  "name": "Learn for Test 1",
+  "description": "It's reeeally hard :(",
+  "assignmentTypeId": "c0b071ba-a9e7-11ed-afa1-0242ac120002",
+  "status": "IN_PROGRESS",
+  "endDate": "2023-02-11T22:08:28.097832",
+  "subjectId": "a1e9f512-a9e7-11ed-afa1-0242ac120002"
+}
+
+###
+DELETE localhost:8080/assignment/af936185-962c-418a-9c08-d6c660d574ea
