@@ -41,3 +41,5 @@ case class StudentPassword(value: String)
 object StudentPassword:
   def create(value: String): Either[ValidationError, StudentPassword] =
     Right(StudentPassword(value))
+    
+case class StudentEncodedPassword(value: String)
