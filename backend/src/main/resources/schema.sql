@@ -1,7 +1,8 @@
 CREATE TABLE public.student
 (
-    id   UUID    NOT NULL PRIMARY KEY,
-    name VARCHAR NOT NULL
+    id       UUID    NOT NULL PRIMARY KEY,
+    name     VARCHAR NOT NULL,
+    password VARCHAR NOT NULL
 );
 
 CREATE TABLE public.term
