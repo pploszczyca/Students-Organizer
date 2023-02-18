@@ -2,7 +2,11 @@ package com.pp.students_organizer_backend.services
 
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.*
-import com.pp.students_organizer_backend.domain.{StudentEntity, StudentName}
+import com.pp.students_organizer_backend.domain.{
+  StudentEntity,
+  StudentName,
+  TokenExpiration
+}
 import dev.profunktor.auth.jwt.JwtToken
 import dev.profunktor.redis4cats.RedisCommands
 import io.circe
@@ -21,11 +25,10 @@ trait AuthService[F[_]]:
 
 object AuthService:
   def make[F[_]: Concurrent](
-      redis: RedisCommands[F, String, String]
+      redis: RedisCommands[F, String, String],
+      tokenExpiration: TokenExpiration
   ): AuthService[F] =
     new AuthService[F]:
-      private val tokenExpiration = FiniteDuration(10, MINUTES)
-
       override def findStudentBy(token: JwtToken): F[Option[StudentEntity]] =
         redis
           .get(token.value)
@@ -44,8 +47,12 @@ object AuthService:
           student: StudentEntity,
           token: JwtToken
       ): F[Unit] =
-        redis.setEx(token.value, student.asJson.noSpaces, tokenExpiration) *>
-          redis.setEx(student.name.value, token.value, tokenExpiration)
+        redis.setEx(
+          token.value,
+          student.asJson.noSpaces,
+          tokenExpiration.value,
+        ) *>
+          redis.setEx(student.name.value, token.value, tokenExpiration.value)
 
       override def delete(
           student: StudentEntity,
