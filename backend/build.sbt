@@ -3,7 +3,7 @@ val MunitVersion = "0.7.29"
 val LogbackVersion = "1.4.5"
 val MunitCatsEffectVersion = "1.0.7"
 val skunkVersion = "0.5.1"
-val circleVersion = "0.14.3"
+val circleVersion = "0.14.4"
 val scalaTestVersion = "3.2.15"
 val mockitoVersion = "3.2.15.0"
 val jwtVersion = "9.2.0"
@@ -25,6 +25,7 @@ lazy val root = (project in file("."))
       "org.typelevel"   %% "munit-cats-effect-3" % MunitCatsEffectVersion % Test,
       "ch.qos.logback"  %  "logback-classic"     % LogbackVersion,
       "org.tpolecat" %% "skunk-core" % skunkVersion,
+      "io.circe" %% "circe-core" % circleVersion,
       "io.circe" %% "circe-generic" % circleVersion,
       "io.circe" %% "circe-literal" % circleVersion,
       "com.github.jwt-scala" %% "jwt-core" % jwtVersion,
