@@ -5,7 +5,7 @@ import cats.implicits.catsSyntaxApply
 import cats.syntax.all.{catsSyntaxApplicativeError, toFunctorOps}
 import cats.syntax.flatMap.toFlatMapOps
 import com.pp.students_organizer_backend.domain.errors.ValidationException
-import com.pp.students_organizer_backend.gateways.material.MaterialRoutesGateway
+import com.pp.students_organizer_backend.gateways.material.MaterialGateway
 import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -15,7 +15,7 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
 class MaterialRoutes[F[_]: JsonDecoder: Sync](
-    private val gateway: MaterialRoutesGateway[F]
+    private val gateway: MaterialGateway[F]
 ) extends (() => HttpRoutes[F]),
       Http4sDsl[F]:
   private val MAIN_ROUTE_PATH = "material"

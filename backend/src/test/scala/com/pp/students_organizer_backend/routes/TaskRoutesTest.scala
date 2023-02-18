@@ -3,7 +3,7 @@ package com.pp.students_organizer_backend.routes
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.errors.ValidationException
-import com.pp.students_organizer_backend.gateways.task.TaskRoutesGateway
+import com.pp.students_organizer_backend.gateways.task.TaskGateway
 import com.pp.students_organizer_backend.routes_models.task.request.InsertTaskRequest
 import com.pp.students_organizer_backend.routes_models.task.response.GetTaskResponse
 import com.pp.students_organizer_backend.test_utils.RoutesChecker
@@ -21,7 +21,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import java.util.UUID
 
 class TaskRoutesTest extends AnyFlatSpec:
-  private val gateway: TaskRoutesGateway[IO] = mock
+  private val gateway: TaskGateway[IO] = mock
 
   "GET -> /task" should "return all tasks" in {
     val taskResponse = GetTaskResponse(
@@ -123,6 +123,6 @@ class TaskRoutesTest extends AnyFlatSpec:
   }
 
   private def tested(
-      gateway: TaskRoutesGateway[IO]
+      gateway: TaskGateway[IO]
   ): TaskRoutes[IO] =
     TaskRoutes(gateway)

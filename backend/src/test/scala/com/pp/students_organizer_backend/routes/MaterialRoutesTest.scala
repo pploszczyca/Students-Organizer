@@ -3,7 +3,7 @@ package com.pp.students_organizer_backend.routes
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.errors.ValidationException
-import com.pp.students_organizer_backend.gateways.material.MaterialRoutesGateway
+import com.pp.students_organizer_backend.gateways.material.MaterialGateway
 import com.pp.students_organizer_backend.routes.MaterialRoutes
 import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes_models.material.response.GetMaterialResponse
@@ -22,7 +22,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import java.util.UUID
 
 class MaterialRoutesTest extends AnyFlatSpec:
-  private val gateway = mock[MaterialRoutesGateway[IO]]
+  private val gateway = mock[MaterialGateway[IO]]
 
   "GET -> /material" should "return all materials" in {
     val materialResponse = GetMaterialResponse(
@@ -127,6 +127,6 @@ class MaterialRoutesTest extends AnyFlatSpec:
   }
 
   private def tested(
-      gateway: MaterialRoutesGateway[IO] = mock
+      gateway: MaterialGateway[IO] = mock
   ): MaterialRoutes[IO] =
     MaterialRoutes(gateway)

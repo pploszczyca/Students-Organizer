@@ -12,7 +12,7 @@ import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 
 import java.util.UUID
 
-trait AssignmentRoutesGateway[F[_]]:
+trait AssignmentGateway[F[_]]:
   def getAllBy(studentUUID: UUID): F[List[GetAssignmentsResponse]]
   def getBy(
       assignmentUUID: UUID,
@@ -22,7 +22,7 @@ trait AssignmentRoutesGateway[F[_]]:
   def update(request: UpdateAssignmentRequest): F[Unit]
   def remove(assignmentId: UUID): F[Unit]
 
-object AssignmentRoutesGateway:
+object AssignmentGateway:
   def make[F[_]: Sync](
       assignmentService: AssignmentService[F],
       taskService: TaskService[F],
@@ -31,8 +31,8 @@ object AssignmentRoutesGateway:
       assignmentEntityMapper: AssignmentEntityMapper,
       getAssignmentsResponseMapper: GetAssignmentsResponseMapper,
       getSingleAssignmentResponseMapper: GetSingleAssignmentResponseMapper
-  ): AssignmentRoutesGateway[F] =
-    new AssignmentRoutesGateway[F]:
+  ): AssignmentGateway[F] =
+    new AssignmentGateway[F]:
       override def getAllBy(
           studentUUID: UUID
       ): F[List[GetAssignmentsResponse]] =

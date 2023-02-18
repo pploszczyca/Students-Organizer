@@ -7,7 +7,7 @@ import com.pp.students_organizer_backend.domain.errors.{
   AssignmentNotFoundException,
   ValidationException
 }
-import com.pp.students_organizer_backend.gateways.assignment.AssignmentRoutesGateway
+import com.pp.students_organizer_backend.gateways.assignment.AssignmentGateway
 import com.pp.students_organizer_backend.routes_models.assignment.request.{
   InsertAssignmentRequest,
   UpdateAssignmentRequest
@@ -20,7 +20,7 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
 class AssignmentRoutes[F[_]: JsonDecoder: Sync](
-    private val gateway: AssignmentRoutesGateway[F]
+    private val gateway: AssignmentGateway[F]
 ) extends (() => HttpRoutes[F]),
       Http4sDsl[F]:
   private val MAIN_ROUTE_PATH = "assignment"

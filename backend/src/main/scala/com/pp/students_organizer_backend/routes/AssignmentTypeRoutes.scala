@@ -7,7 +7,7 @@ import cats.syntax.all.{catsSyntaxApplicativeError, toFunctorOps}
 import cats.syntax.flatMap.toFlatMapOps
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
 import com.pp.students_organizer_backend.domain.errors.ValidationException
-import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
+import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeGateway
 import com.pp.students_organizer_backend.routes_models.assignmentType.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes_models.assignmentType.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService
@@ -20,7 +20,7 @@ import org.http4s.server.Router
 import org.http4s.{EntityDecoder, EntityEncoder, HttpRoutes}
 
 class AssignmentTypeRoutes[F[_]: JsonDecoder: Sync](
-    private val gateway: AssignmentTypeRoutesGateway[F]
+    private val gateway: AssignmentTypeGateway[F]
 ) extends (() => HttpRoutes[F]),
       Http4sDsl[F]:
   private val MAIN_ROUTE_PATH = "assignmentType"

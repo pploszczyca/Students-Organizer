@@ -18,19 +18,19 @@ import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 
 import java.util.UUID
 
-trait MaterialRoutesGateway[F[_]]:
+trait MaterialGateway[F[_]]:
   def getAll: F[List[GetMaterialResponse]]
   def insert(request: InsertMaterialRequest): F[Unit]
   def remove(materialId: UUID): F[Unit]
 
-object MaterialRoutesGateway:
+object MaterialGateway:
   def make[F[_]: Sync](
       materialService: MaterialService[F]
   )(using
       getMaterialResponseMapper: GetMaterialResponseMapper,
       materialEntityMapper: MaterialEntityMapper
-  ): MaterialRoutesGateway[F] =
-    new MaterialRoutesGateway[F]:
+  ): MaterialGateway[F] =
+    new MaterialGateway[F]:
       override def getAll: F[List[GetMaterialResponse]] =
         materialService.getAll
           .map(_.map(getMaterialResponseMapper.map))

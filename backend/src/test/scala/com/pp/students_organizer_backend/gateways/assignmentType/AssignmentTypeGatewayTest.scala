@@ -15,7 +15,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 
 import java.util.UUID
 
-class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
+class AssignmentTypeGatewayTest extends AnyFlatSpec:
   private val assignmentTypeService: AssignmentTypeService[IO] = mock
   private given getAssignmentTypeResponseMapper: GetAssignmentTypeResponseMapper = mock
   private given assignmentTypeEntityMapper: AssignmentTypeEntityMapper = mock
@@ -97,7 +97,7 @@ class AssignmentTypeRoutesGatewayTest extends AnyFlatSpec:
   )(using
       assignmentTypeEntityMapper: AssignmentTypeEntityMapper,
       getAssignmentTypeResponseMapper: GetAssignmentTypeResponseMapper
-  ): AssignmentTypeRoutesGateway[IO] =
-    AssignmentTypeRoutesGateway.make(
+  ): AssignmentTypeGateway[IO] =
+    AssignmentTypeGateway.make(
       assignmentTypeService = assignmentTypeService
     )

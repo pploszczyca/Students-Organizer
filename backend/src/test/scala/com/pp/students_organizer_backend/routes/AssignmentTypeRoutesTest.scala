@@ -4,7 +4,7 @@ import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.AssignmentTypeEntity
 import com.pp.students_organizer_backend.domain.errors.ValidationException
-import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeRoutesGateway
+import com.pp.students_organizer_backend.gateways.assignmentType.AssignmentTypeGateway
 import com.pp.students_organizer_backend.routes.AssignmentTypeRoutes
 import com.pp.students_organizer_backend.routes_models.assignmentType.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes_models.assignmentType.response.GetAssignmentTypeResponse
@@ -29,7 +29,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 import java.util.UUID
 
 class AssignmentTypeRoutesTest extends AnyFlatSpec:
-  private val gateway = mock[AssignmentTypeRoutesGateway[IO]]
+  private val gateway = mock[AssignmentTypeGateway[IO]]
 
   "GET -> /assignmentType" should "return response" in {
     val assignmentTypeResponse = GetAssignmentTypeResponse(
@@ -125,7 +125,7 @@ class AssignmentTypeRoutesTest extends AnyFlatSpec:
   }
 
   private def tested(
-      gateway: AssignmentTypeRoutesGateway[IO] =
-        mock[AssignmentTypeRoutesGateway[IO]]
+      gateway: AssignmentTypeGateway[IO] =
+        mock[AssignmentTypeGateway[IO]]
   ): AssignmentTypeRoutes[IO] =
     AssignmentTypeRoutes(gateway)

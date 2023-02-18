@@ -15,7 +15,7 @@ import com.pp.students_organizer_backend.routes_models.task.response.GetTaskResp
 
 import java.util.UUID
 
-class TaskRoutesGatewayTest extends AnyFlatSpec:
+class TaskGatewayTest extends AnyFlatSpec:
   private val taskService: TaskService[IO] = mock
   private given mockGetTaskResponseMapper: GetTaskResponseMapper = mock
   private given mockTaskEntityMapper: TaskEntityMapper = mock
@@ -92,7 +92,7 @@ class TaskRoutesGatewayTest extends AnyFlatSpec:
   )(using
       getTaskResponseMapper: GetTaskResponseMapper,
       taskEntityMapper: TaskEntityMapper
-  ): TaskRoutesGateway[IO] =
-    TaskRoutesGateway.make(
+  ): TaskGateway[IO] =
+    TaskGateway.make(
       taskService = taskService
     )

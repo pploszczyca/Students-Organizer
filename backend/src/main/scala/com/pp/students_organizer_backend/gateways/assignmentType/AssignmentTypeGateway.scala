@@ -21,19 +21,19 @@ import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 
 import java.util.UUID
 
-trait AssignmentTypeRoutesGateway[F[_]]:
+trait AssignmentTypeGateway[F[_]]:
   def getAll: F[List[GetAssignmentTypeResponse]]
   def insert(insertAssignmentTypeRequest: InsertAssignmentTypeRequest): F[Unit]
   def remove(assignmentTypeId: UUID): F[Unit]
 
-object AssignmentTypeRoutesGateway:
+object AssignmentTypeGateway:
   def make[F[_]: Sync](
       assignmentTypeService: AssignmentTypeService[F]
   )(using
       assignmentTypeEntityMapper: AssignmentTypeEntityMapper,
       getAssignmentTypeResponseMapper: GetAssignmentTypeResponseMapper
-  ): AssignmentTypeRoutesGateway[F] =
-    new AssignmentTypeRoutesGateway[F]:
+  ): AssignmentTypeGateway[F] =
+    new AssignmentTypeGateway[F]:
       override def getAll: F[List[GetAssignmentTypeResponse]] =
         assignmentTypeService.getAll
           .map(_.map(getAssignmentTypeResponseMapper.map))

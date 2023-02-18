@@ -4,7 +4,7 @@ import cats.effect.Sync
 import cats.syntax.all.{catsSyntaxApplicativeError, catsSyntaxApply}
 import cats.syntax.flatMap.toFlatMapOps
 import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
-import com.pp.students_organizer_backend.gateways.task.TaskRoutesGateway
+import com.pp.students_organizer_backend.gateways.task.TaskGateway
 import com.pp.students_organizer_backend.routes_models.task.request.InsertTaskRequest
 import io.circe.generic.auto.*
 import io.circe.syntax.*
@@ -14,7 +14,7 @@ import org.http4s.dsl.Http4sDsl
 import org.http4s.server.Router
 
 class TaskRoutes[F[_]: JsonDecoder: Sync](
-    private val gateway: TaskRoutesGateway[F]
+    private val gateway: TaskGateway[F]
 ) extends (() => HttpRoutes[F]),
       Http4sDsl[F]:
   private val MAIN_ROUTE_PATH = "task"

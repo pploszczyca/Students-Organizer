@@ -15,7 +15,7 @@ import org.scalatestplus.mockito.MockitoSugar.mock
 
 import java.util.UUID
 
-class MaterialRoutesGatewayTest extends AnyFlatSpec:
+class MaterialGatewayTest extends AnyFlatSpec:
   private val materialService: MaterialService[IO] = mock
   private given mockGetMaterialResponseMapper: GetMaterialResponseMapper = mock
   private given mockMaterialEntityMapper: MaterialEntityMapper = mock
@@ -95,7 +95,7 @@ class MaterialRoutesGatewayTest extends AnyFlatSpec:
   )(using
       getMaterialResponseMapper: GetMaterialResponseMapper,
       materialEntityMapper: MaterialEntityMapper
-  ): MaterialRoutesGateway[IO] =
-    MaterialRoutesGateway.make(
+  ): MaterialGateway[IO] =
+    MaterialGateway.make(
       materialService = materialService
     )

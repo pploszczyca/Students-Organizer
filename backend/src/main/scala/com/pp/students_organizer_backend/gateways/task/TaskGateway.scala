@@ -12,18 +12,18 @@ import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 
 import java.util.UUID
 
-trait TaskRoutesGateway[F[_]]:
+trait TaskGateway[F[_]]:
   def getAll: F[List[GetTaskResponse]]
   def insert(request: InsertTaskRequest): F[Unit]
   def remove(taskId: UUID): F[Unit]
 
-object TaskRoutesGateway:
+object TaskGateway:
   def make[F[_]: Sync](
       taskService: TaskService[F]
   )(using
       getTaskResponseMapper: GetTaskResponseMapper,
       taskEntityMapper: TaskEntityMapper
-  ): TaskRoutesGateway[F] = new TaskRoutesGateway[F]:
+  ): TaskGateway[F] = new TaskGateway[F]:
     override def getAll: F[List[GetTaskResponse]] =
       taskService
         .getAll
