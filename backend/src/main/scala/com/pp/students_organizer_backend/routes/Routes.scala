@@ -35,5 +35,14 @@ class Routes[F[_]: Async](gateways: Gateways[F]):
       gateway = gateways.assignmentRoutes
     )
 
+  lazy val auth: AuthRoutes[F] =
+    AuthRoutes[F](
+      gateway = gateways.auth
+    )
+
   lazy val allRoutes: HttpRoutes[F] =
-    assignmentType() <+> material() <+> task() <+> assignment()
+    assignmentType() <+>
+      material() <+>
+      task() <+>
+      assignment() <+>
+      auth()

@@ -1,5 +1,6 @@
 package com.pp.students_organizer_backend.services
 
+import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.*
 import com.pp.students_organizer_backend.domain.{
@@ -25,38 +26,44 @@ trait AuthService[F[_]]:
 
 object AuthService:
   def make[F[_]: Concurrent](
-      redis: RedisCommands[F, String, String],
+      redis: Resource[F, RedisCommands[F, String, String]],
       tokenExpiration: TokenExpiration
   ): AuthService[F] =
     new AuthService[F]:
       override def findStudentBy(token: JwtToken): F[Option[StudentEntity]] =
-        redis
-          .get(token.value)
-          .map {
-            _.flatMap { student =>
-              circe.jawn.decode[StudentEntity](student).toOption
+        redis.use {
+          _.get(token.value)
+            .map {
+              _.flatMap { student =>
+                circe.jawn.decode[StudentEntity](student).toOption
+              }
             }
-          }
+        }
 
       override def findTokenBy(name: StudentName): F[Option[JwtToken]] =
-        redis
-          .get(name.value)
-          .map(_.map(JwtToken.apply))
+        redis.use {
+          _.get(name.value)
+            .map(_.map(JwtToken.apply))
+        }
 
       override def insertStudentWithToken(
           student: StudentEntity,
           token: JwtToken
       ): F[Unit] =
-        redis.setEx(
-          token.value,
-          student.asJson.noSpaces,
-          tokenExpiration.value,
-        ) *>
-          redis.setEx(student.name.value, token.value, tokenExpiration.value)
+        redis.use { command =>
+          command.setEx(
+            token.value,
+            student.asJson.noSpaces,
+            tokenExpiration.value
+          ) *>
+            command.setEx(student.name.value, token.value, tokenExpiration.value)
+        }
 
       override def delete(
           student: StudentEntity,
           token: JwtToken
       ): F[Unit] =
-        redis.del(token.value) *>
-          redis.del(student.name.value).void
+        redis.use { command =>
+          command.del(token.value) *>
+            command.del(student.name.value).void
+        }
