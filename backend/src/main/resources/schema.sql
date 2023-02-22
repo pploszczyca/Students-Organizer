@@ -1,7 +1,7 @@
 CREATE TABLE public.student
 (
     id       UUID    NOT NULL PRIMARY KEY,
-    name     VARCHAR NOT NULL,
+    name     VARCHAR NOT NULL UNIQUE,
     password VARCHAR NOT NULL
 );
 

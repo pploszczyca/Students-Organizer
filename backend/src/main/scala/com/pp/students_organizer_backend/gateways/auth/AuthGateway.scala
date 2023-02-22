@@ -2,25 +2,12 @@ package com.pp.students_organizer_backend.gateways.auth
 
 import cats.MonadThrow
 import cats.effect.kernel.Concurrent
-import cats.syntax.all.{
-  catsSyntaxApplicativeErrorId,
-  toFlatMapOps,
-  toFunctorOps
-}
-import com.pp.students_organizer_backend.domain.errors.{
-  StudentNotFound,
-  StudentPasswordIsIncorrect
-}
-import com.pp.students_organizer_backend.domain.{
-  StudentEncodedPassword,
-  StudentEntity,
-  StudentName
-}
+import cats.implicits.catsSyntaxApply
+import cats.syntax.all.{catsSyntaxApplicativeErrorId, toFlatMapOps, toFunctorOps}
+import com.pp.students_organizer_backend.domain.errors.{StudentNotFound, StudentPasswordIsIncorrect}
+import com.pp.students_organizer_backend.domain.{StudentEncodedPassword, StudentEntity, StudentName}
 import com.pp.students_organizer_backend.gateways.auth.mappers.StudentEntityMapper
-import com.pp.students_organizer_backend.routes_models.auth.request.{
-  LoginRequest,
-  RegisterRequest
-}
+import com.pp.students_organizer_backend.routes_models.auth.request.{LoginRequest, RegisterRequest}
 import com.pp.students_organizer_backend.routes_models.auth.response.TokenResponse
 import com.pp.students_organizer_backend.services.{AuthService, StudentService}
 import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
@@ -63,8 +50,7 @@ object AuthGateway:
         studentMapper
           .map(request)
           .mapWithNoError { student =>
-            studentService.insert(student)
-            createToken(student)
+            studentService.insert(student) *> createToken(student)
           }
 
       private def createToken(student: StudentEntity): F[TokenResponse] =

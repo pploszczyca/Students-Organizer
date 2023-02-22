@@ -1,6 +1,7 @@
 package com.pp.students_organizer_backend.domain
 
 import com.pp.students_organizer_backend.domain.errors.ValidationError
+import com.pp.students_organizer_backend.utils.auth.PasswordUtils
 import com.pp.students_organizer_backend.utils.validators.ValidateEmptyString.*
 
 import java.util.UUID
@@ -8,12 +9,12 @@ import java.util.UUID
 case class StudentEntity(
     id: StudentId,
     name: StudentName,
-    password: StudentPassword,
+    password: StudentPassword
 )
 object StudentEntity:
   def create(
       name: String,
-      password: String,
+      password: String
   ): Either[ValidationError, StudentEntity] =
     for
       studentId <- StudentId.create
@@ -22,7 +23,7 @@ object StudentEntity:
     yield StudentEntity(
       id = studentId,
       name = studentName,
-      password = studentPassword,
+      password = studentPassword
     )
 
 case class StudentId(value: UUID)
@@ -39,7 +40,10 @@ object StudentName:
 
 case class StudentPassword(value: String)
 object StudentPassword:
-  def create(value: String): Either[ValidationError, StudentPassword] =
-    Right(StudentPassword(value))
-    
+  def create(
+      value: String,
+      passwordUtils: PasswordUtils = PasswordUtils.make
+  ): Either[ValidationError, StudentPassword] =
+    Right(passwordUtils.decode(StudentEncodedPassword(value)))
+
 case class StudentEncodedPassword(value: String)
