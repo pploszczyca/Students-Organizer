@@ -13,6 +13,7 @@ import com.pp.students_organizer_backend.services.{AuthService, StudentService}
 import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 import com.pp.students_organizer_backend.utils.auth.{PasswordUtils, TokenUtils}
 import dev.profunktor.auth.jwt.JwtToken
+import cats.syntax.all.catsSyntaxApplicativeId
 
 trait AuthGateway[F[_]]:
   def login(request: LoginRequest): F[TokenResponse]
@@ -55,7 +56,6 @@ object AuthGateway:
 
       private def createToken(student: StudentEntity): F[TokenResponse] =
         tokenUtils.createToken
-          .map { token =>
-            authService.insertStudentWithToken(student, token)
-            TokenResponse(token.value)
+          .flatMap { token =>
+            authService.insertStudentWithToken(student, token) *> TokenResponse(token.value).pure[F]
           }

@@ -16,6 +16,9 @@ object Main extends IOApp.Simple:
       redis = RedisProvider.commandsResource
     )
     val gateways = Gateways.make(services = services)
-    val routes = Routes.make(gateways = gateways)
+    val routes = Routes.make(
+      gateways = gateways,
+      authenticate = services.auth.findStudentBy,
+    )
 
     Server[IO](routes).stream.compile.drain.as(ExitCode.Success)

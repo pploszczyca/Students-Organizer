@@ -3,11 +3,7 @@ package com.pp.students_organizer_backend.services
 import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.*
-import com.pp.students_organizer_backend.domain.{
-  StudentEntity,
-  StudentName,
-  TokenExpiration
-}
+import com.pp.students_organizer_backend.domain.{StudentEntity, StudentName, TokenExpiration}
 import dev.profunktor.auth.jwt.JwtToken
 import dev.profunktor.redis4cats.RedisCommands
 import io.circe
@@ -15,11 +11,12 @@ import io.circe.*
 import io.circe.Encoder.encodeString
 import io.circe.generic.auto.*
 import io.circe.syntax.*
+import pdi.jwt.JwtClaim
 
 import scala.concurrent.duration.{FiniteDuration, MINUTES}
 
 trait AuthService[F[_]]:
-  def findStudentBy(token: JwtToken): F[Option[StudentEntity]]
+  def findStudentBy(token: JwtToken)(claim: JwtClaim): F[Option[StudentEntity]]
   def findTokenBy(name: StudentName): F[Option[JwtToken]]
   def insertStudentWithToken(student: StudentEntity, token: JwtToken): F[Unit]
   def delete(student: StudentEntity, token: JwtToken): F[Unit]
@@ -30,7 +27,7 @@ object AuthService:
       tokenExpiration: TokenExpiration
   ): AuthService[F] =
     new AuthService[F]:
-      override def findStudentBy(token: JwtToken): F[Option[StudentEntity]] =
+      override def findStudentBy(token: JwtToken)(claim: JwtClaim): F[Option[StudentEntity]] =
         redis.use {
           _.get(token.value)
             .map {

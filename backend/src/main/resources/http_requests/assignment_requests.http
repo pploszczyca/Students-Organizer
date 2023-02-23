@@ -1,14 +1,17 @@
 ###
-GET localhost:8080/assignment/61b314ce-a9e7-11ed-afa1-0242ac120002
+GET localhost:8080/assignment
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzcxNTc2ODcsZmZiMDUyZjUtYzI0ZS00NDI4LThiMTEtNzVhZTQ0NjBiZjQyfQ.siey-VWph-rCOxmWGtmcMP1837tEUEYivtTwphXvnE8
 
 ###
-GET localhost:8080/assignment/61b314ce-a9e7-11ed-afa1-0242ac120002/a1e1f1e1-307f-44d7-a6b8-3fa3ccf1e5ca
+GET localhost:8080/assignment/0d3761c7-2a03-48fc-a160-df5933666d73
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzcxNTc2ODcsZmZiMDUyZjUtYzI0ZS00NDI4LThiMTEtNzVhZTQ0NjBiZjQyfQ.siey-VWph-rCOxmWGtmcMP1837tEUEYivtTwphXvnE8
 
 ###
 POST localhost:8080/assignment
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzcxNTc2ODcsZmZiMDUyZjUtYzI0ZS00NDI4LThiMTEtNzVhZTQ0NjBiZjQyfQ.siey-VWph-rCOxmWGtmcMP1837tEUEYivtTwphXvnE8
 
 {
   "name": "Learn for Test 1",

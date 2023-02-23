@@ -1,5 +1,5 @@
 INSERT INTO student (id, name, password)
-VALUES ('61b314ce-a9e7-11ed-afa1-0242ac120002', 'Pepe', 'password');
+VALUES ('61b314ce-a9e7-11ed-afa1-0242ac120002', 'Pepe', '��-�m�');
 
 INSERT INTO term (id, number, year, student_id)
 VALUES ('7ecd4d0e-a9e7-11ed-afa1-0242ac120002', 1, 2023,
