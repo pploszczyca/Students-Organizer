@@ -2,7 +2,7 @@ package com.pp.students_organizer_backend.services.database
 
 import com.pp.students_organizer_backend.domain.*
 import skunk.Codec
-import skunk.codec.all.{bool, timestamp, varchar}
+import skunk.codec.all.{bool, int4, timestamp, varchar}
 import skunk.codec.uuid.uuid
 
 object DatabaseCodec:
@@ -46,6 +46,13 @@ object DatabaseCodec:
       uuid.imap[SubjectId](SubjectId.apply)(_.value)
     val subjectName: Codec[SubjectName] =
       varchar.imap[SubjectName](SubjectName.apply)(_.value)
+
+  object Term:
+    val termId: Codec[TermId] = uuid.imap[TermId](TermId.apply)(_.value)
+    val termNumber: Codec[TermNumber] =
+      int4.imap[TermNumber](TermNumber.apply)(_.value)
+    val termYear: Codec[TermYear] =
+      int4.imap[TermYear](TermYear.apply)(_.value)
 
   object Student:
     val studentId: Codec[StudentId] =

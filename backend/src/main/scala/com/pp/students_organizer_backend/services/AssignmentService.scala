@@ -3,11 +3,7 @@ package com.pp.students_organizer_backend.services
 import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.{toFlatMapOps, toFoldableOps, toFunctorOps}
-import com.pp.students_organizer_backend.domain.{
-  AssignmentEntity,
-  AssignmentId,
-  StudentId
-}
+import com.pp.students_organizer_backend.domain.{AssignmentEntity, AssignmentId, StudentId, SubjectId}
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.Assignment.*
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.AssignmentType.assignmentTypeId
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.Student.studentId

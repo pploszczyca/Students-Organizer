@@ -42,3 +42,6 @@ class Services[F[_]: Concurrent](
       redis = redis,
       tokenExpiration = TokenExpiration(FiniteDuration(10, MINUTES)) // TODO: Need to change to TokenExpirationProvider
     )
+    
+  lazy val subject: SubjectService[F] =
+    SubjectService.make(database)

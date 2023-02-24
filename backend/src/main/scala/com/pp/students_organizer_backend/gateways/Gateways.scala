@@ -35,7 +35,8 @@ class Gateways[F[_]: Async](services: Services[F]):
     AssignmentGateway.make[F](
       assignmentService = services.assignment,
       taskService = services.task,
-      materialService = services.material
+      materialService = services.material,
+      subjectService = services.subject,
     )
     
   lazy val auth: AuthGateway[F] =
