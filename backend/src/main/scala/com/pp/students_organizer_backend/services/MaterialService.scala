@@ -15,12 +15,13 @@ import com.pp.students_organizer_backend.services.database.DatabaseCodec.Materia
   materialName,
   materialUrl
 }
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Student.studentId
 import skunk.codec.all.{int4, uuid, varchar}
 import skunk.implicits.{sql, toIdOps}
-import skunk.{Command, Query, Session, Void, ~}
+import skunk.*
 
 trait MaterialService[F[_]]:
-  def getAll: F[List[MaterialEntity]]
+  def getAll(studentId: StudentId): F[List[MaterialEntity]]
   def getAllBy(assignmentId: AssignmentId): F[List[MaterialEntity]]
   def insert(material: MaterialEntity): F[Unit]
   def remove(materialId: MaterialId): F[Unit]
@@ -30,9 +31,11 @@ object MaterialService:
       database: Resource[F, Session[F]]
   ): MaterialService[F] =
     new MaterialService[F]:
-      override def getAll: F[List[MaterialEntity]] =
+      override def getAll(studentId: StudentId): F[List[MaterialEntity]] =
         database.use { session =>
-          session.execute(ServiceSQL.getAllQuery)
+          session
+            .prepare(ServiceSQL.getAllQuery)
+            .flatMap(_.stream(studentId, 1024).compile.toList)
         }
 
       override def getAllBy(
@@ -61,8 +64,11 @@ object MaterialService:
         }
 
   private object ServiceSQL:
-    val getAllQuery: Query[Void, MaterialEntity] =
-      sql"SELECT id, name, url, assignment_id FROM material"
+    val getAllQuery: Query[StudentId, MaterialEntity] =
+      sql"""
+        SELECT id, name, url, assignment_id FROM material_with_student
+            WHERE student_id = $studentId
+         """
         .query(materialId ~ materialName ~ materialUrl ~ assignmentId)
         .gmap[MaterialEntity]
 
@@ -76,4 +82,4 @@ object MaterialService:
         .gcontramap[MaterialEntity]
 
     val removeCommand: Command[MaterialId] =
-      sql"DELETE FROM material WHERE id=$materialId".command
+      sql"""DELETE FROM material WHERE id=$materialId""".command

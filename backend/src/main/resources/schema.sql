@@ -76,3 +76,14 @@ CREATE TABLE public.task
         FOREIGN KEY (assignment_id)
             REFERENCES assignment (id)
 );
+
+CREATE VIEW assignment_with_student AS
+    SELECT a.id, a.name, a.description, a.assignment_type_id, a.status, a.end_date, a.subject_id, t.student_id FROM assignment as a
+        INNER JOIN subject s on s.id = a.subject_id
+        INNER JOIN term t on t.id = s.term_id
+        INNER JOIN student st on st.id = t.student_id;
+
+CREATE VIEW material_with_student AS
+    SELECT m.id, m.name, m.url, m.assignment_id, aws.student_id FROM material m
+        INNER JOIN assignment_with_student aws on m.name = aws.name
+
