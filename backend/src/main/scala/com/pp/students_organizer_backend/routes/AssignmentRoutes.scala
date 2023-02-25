@@ -49,7 +49,7 @@ class AssignmentRoutes[F[_]: JsonDecoder: Sync](
           .handleErrorWith {
             case ValidationException(value) => BadRequest(value.asJson)
             case exception: SubjectNotFoundException =>
-              BadRequest(exception.getMessage)
+              NotFound(exception.getMessage)
           }
 
       case request @ PUT -> Root as student =>
@@ -61,7 +61,7 @@ class AssignmentRoutes[F[_]: JsonDecoder: Sync](
           .handleErrorWith {
             case ValidationException(value) => BadRequest(value.asJson)
             case exception: SubjectNotFoundException =>
-              BadRequest(exception.getMessage)
+              NotFound(exception.getMessage)
           }
 
       case DELETE -> Root / UUIDVar(assignmentUUID) as student =>
