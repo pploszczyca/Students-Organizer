@@ -2,8 +2,8 @@ package com.pp.students_organizer_backend.gateways.assignment
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, ValidationError, ValidationException}
 import com.pp.students_organizer_backend.domain.*
+import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, SubjectNotFoundException, ValidationError, ValidationException}
 import com.pp.students_organizer_backend.gateways.assignment.mappers.{AssignmentEntityMapper, GetAssignmentsResponseMapper, GetSingleAssignmentResponseMapper}
 import com.pp.students_organizer_backend.routes_models.assignment.request.{InsertAssignmentRequest, UpdateAssignmentRequest}
 import com.pp.students_organizer_backend.routes_models.assignment.response.{GetAssignmentsResponse, GetSingleAssignmentResponse}
@@ -87,11 +87,13 @@ class AssignmentGatewayTest extends AnyFlatSpec:
     val assignmentUUID = mock[UUID]
     val studentId = mock[StudentId]
     val assignmentId = AssignmentId(assignmentUUID)
-    val expectedException = AssignmentNotFoundException
+    val expectedException = AssignmentNotFoundException(assignmentId)
 
     when(assignmentService.get(any(), any())) thenReturn IO(None)
     when(taskService.getAllBy(any())) thenReturn IO(List(mock[TaskEntity]))
-    when(materialService.getAllBy(any())) thenReturn IO(List(mock[MaterialEntity]))
+    when(materialService.getAllBy(any())) thenReturn IO(
+      List(mock[MaterialEntity])
+    )
 
     val actualException = intercept[Exception] {
       tested(
@@ -111,19 +113,28 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   "ON insert" should "add new assignment" in {
     val studentId = mock[StudentId]
     val request = mock[InsertAssignmentRequest]
-    val assignment = mock[AssignmentEntity]
+    val subjectId = mock[SubjectId]
+    val subject = mock[SubjectEntity]
+    val assignment = fakeAssignment(
+      subjectId = subjectId
+    )
 
     given assignmentEntityMapper: AssignmentEntityMapper = mock
 
-    when(assignmentEntityMapper.map(any[InsertAssignmentRequest]())) thenReturn Right(assignment)
+    when(
+      assignmentEntityMapper.map(any[InsertAssignmentRequest]())
+    ) thenReturn Right(assignment)
+    when(subjectService.getBy(any(), any())) thenReturn IO(Some(subject))
     when(assignmentService.insert(any())) thenReturn IO.unit
 
     tested(
-      assignmentService = assignmentService
+      assignmentService = assignmentService,
+      subjectService = subjectService,
     ).insert(request, studentId).unsafeRunSync()
 
-    val inOrderCheck = inOrder(assignmentEntityMapper, assignmentService)
+    val inOrderCheck = inOrder(assignmentEntityMapper, subjectService, assignmentService)
     inOrderCheck.verify(assignmentEntityMapper).map(request)
+    inOrderCheck.verify(subjectService).getBy(subjectId, studentId)
     inOrderCheck.verify(assignmentService).insert(assignment)
   }
 
@@ -136,7 +147,9 @@ class AssignmentGatewayTest extends AnyFlatSpec:
 
     given assignmentEntityMapper: AssignmentEntityMapper = mock
 
-    when(assignmentEntityMapper.map(any[InsertAssignmentRequest]())) thenReturn Left(error)
+    when(
+      assignmentEntityMapper.map(any[InsertAssignmentRequest]())
+    ) thenReturn Left(error)
 
     val actualException = intercept[ValidationException] {
       tested().insert(request, studentId).unsafeRunSync()
@@ -146,22 +159,59 @@ class AssignmentGatewayTest extends AnyFlatSpec:
     assert(actualException == expectedException)
   }
 
-  "ON update" should "update assignment" in {
+  "ON insert" should "throw subject not found exception WHEN subject isn't found" in {
     val studentId = mock[StudentId]
-    val request = mock[UpdateAssignmentRequest]
-    val assignment = mock[AssignmentEntity]
+    val request = mock[InsertAssignmentRequest]
+    val subjectId = mock[SubjectId]
+    val assignment = fakeAssignment(
+      subjectId = subjectId
+    )
+    val expectedException = SubjectNotFoundException(subjectId)
 
     given assignmentEntityMapper: AssignmentEntityMapper = mock
 
-    when(assignmentEntityMapper.map(any[UpdateAssignmentRequest]())) thenReturn Right(assignment)
+    when(
+      assignmentEntityMapper.map(any[InsertAssignmentRequest]())
+    ) thenReturn Right(assignment)
+    when(subjectService.getBy(any(), any())) thenReturn IO(None)
+
+    val actualException = intercept[SubjectNotFoundException] {
+      tested(
+        subjectService = subjectService,
+      ).insert(request, studentId).unsafeRunSync()
+    }
+
+    val inOrderCheck = inOrder(assignmentEntityMapper, subjectService)
+    inOrderCheck.verify(assignmentEntityMapper).map(request)
+    inOrderCheck.verify(subjectService).getBy(subjectId, studentId)
+    assert(expectedException == actualException)
+  }
+
+  "ON update" should "update assignment" in {
+    val studentId = mock[StudentId]
+    val request = mock[UpdateAssignmentRequest]
+    val subjectId = mock[SubjectId]
+    val assignment = fakeAssignment(
+      subjectId = subjectId
+    )
+    val subject = mock[SubjectEntity]
+
+    given assignmentEntityMapper: AssignmentEntityMapper = mock
+
+    when(
+      assignmentEntityMapper.map(any[UpdateAssignmentRequest]())
+    ) thenReturn Right(assignment)
+    when(subjectService.getBy(any(), any())) thenReturn IO(Some(subject))
     when(assignmentService.update(any())) thenReturn IO.unit
 
     tested(
-      assignmentService = assignmentService
+      assignmentService = assignmentService,
+      subjectService = subjectService,
     ).update(request, studentId).unsafeRunSync()
 
-    val inOrderCheck = inOrder(assignmentEntityMapper, assignmentService)
+    val inOrderCheck = inOrder(assignmentEntityMapper, subjectService, assignmentService)
     inOrderCheck.verify(assignmentEntityMapper).map(request)
+    inOrderCheck.verify(subjectService).getBy(subjectId, studentId)
     inOrderCheck.verify(assignmentService).update(assignment)
   }
 
@@ -174,7 +224,9 @@ class AssignmentGatewayTest extends AnyFlatSpec:
 
     given assignmentEntityMapper: AssignmentEntityMapper = mock
 
-    when(assignmentEntityMapper.map(any[UpdateAssignmentRequest]())) thenReturn Left(error)
+    when(
+      assignmentEntityMapper.map(any[UpdateAssignmentRequest]())
+    ) thenReturn Left(error)
 
     val actualException = intercept[ValidationException] {
       tested().update(request, studentId).unsafeRunSync()
@@ -184,6 +236,34 @@ class AssignmentGatewayTest extends AnyFlatSpec:
     assert(actualException == expectedException)
   }
 
+  "ON update" should "throw subject not found exception WHEN subject isn't found" in {
+    val studentId = mock[StudentId]
+    val request = mock[UpdateAssignmentRequest]
+    val subjectId = mock[SubjectId]
+    val assignment = fakeAssignment(
+      subjectId = subjectId
+    )
+    val expectedException = SubjectNotFoundException(subjectId)
+
+    given assignmentEntityMapper: AssignmentEntityMapper = mock
+
+    when(
+      assignmentEntityMapper.map(any[UpdateAssignmentRequest]())
+    ) thenReturn Right(assignment)
+    when(subjectService.getBy(any(), any())) thenReturn IO(None)
+
+    val actualException = intercept[SubjectNotFoundException] {
+      tested(
+        subjectService = subjectService
+      ).update(request, studentId).unsafeRunSync()
+    }
+
+    val inOrderCheck = inOrder(assignmentEntityMapper, subjectService)
+    inOrderCheck.verify(assignmentEntityMapper).map(request)
+    inOrderCheck.verify(subjectService).getBy(subjectId, studentId)
+    assert(expectedException == actualException)
+  }
+
   "ON remove" should "remove assignment" in {
     val assignmentUUID = mock[UUID]
     val assignmentId = AssignmentId(assignmentUUID)
@@ -191,11 +271,29 @@ class AssignmentGatewayTest extends AnyFlatSpec:
     when(assignmentService.remove(assignmentId)) thenReturn IO.unit
 
     tested(
-      assignmentService = assignmentService,
+      assignmentService = assignmentService
     ).remove(assignmentUUID).unsafeRunSync()
 
     verify(assignmentService).remove(assignmentId)
   }
+
+  private def fakeAssignment(
+      id: AssignmentId = mock,
+      name: AssignmentName = mock,
+      description: AssignmentDescription = mock,
+      assignmentTypeId: AssignmentTypeId = mock,
+      status: AssignmentStatus = mock,
+      endDate: AssignmentEndDate = mock,
+      subjectId: SubjectId = mock
+  ) = AssignmentEntity(
+    id = id,
+    name = name,
+    description = description,
+    assignmentTypeId = assignmentTypeId,
+    status = status,
+    endDate = endDate,
+    subjectId = subjectId
+  )
 
   private def tested(
       assignmentService: AssignmentService[IO] = mock,
@@ -211,5 +309,5 @@ class AssignmentGatewayTest extends AnyFlatSpec:
       assignmentService = assignmentService,
       taskService = taskService,
       materialService = materialService,
-      subjectService = subjectService,
+      subjectService = subjectService
     )
