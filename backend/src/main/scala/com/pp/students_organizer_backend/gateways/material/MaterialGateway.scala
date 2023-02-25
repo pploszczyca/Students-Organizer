@@ -39,7 +39,7 @@ trait MaterialGateway[F[_]]:
 object MaterialGateway:
   def make[F[_]: Sync: MonadThrow](
       materialService: MaterialService[F],
-      assignmentService: AssignmentService[F]
+      assignmentService: AssignmentService[F],
   )(using
       getMaterialResponseMapper: GetMaterialResponseMapper,
       materialEntityMapper: MaterialEntityMapper
