@@ -9,6 +9,7 @@ Content-Type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzcxNTc2ODcsZmZiMDUyZjUtYzI0ZS00NDI4LThiMTEtNzVhZTQ0NjBiZjQyfQ.siey-VWph-rCOxmWGtmcMP1837tEUEYivtTwphXvnE8
 
 ###
+# For mock user: Pepe
 POST localhost:8080/assignment
 Content-Type: application/json
 Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzcyMzk1NDEsYTM1NmE5ZTEtOGE4MC00ZWFmLWIyNTMtMTVmNTY0NDhlNDNjfQ.I2UmE0-i23Yb0MZCrnb-ndIqmGhAlilJ5VVRlejz_X8
@@ -20,6 +21,21 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzcyMzk1N
   "status": "TO_DO",
   "endDate": "2023-02-11T22:08:28.097832",
   "subjectId": "a1e9f512-a9e7-11ed-afa1-0242ac120002"
+}
+
+###
+# For mock user: Karol
+POST localhost:8080/assignment
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzczMjMzNzgsN2Q2MzJlYjUtZGQwYy00MDI1LWI3MjItZjQ3NmU4MmI0M2RjfQ.sdzHSX7QY0jtAuUdVqlVc_GTG4h5zYzjPeJFHp8NHws
+
+{
+  "name": "Something diffrent",
+  "description": "Easy? :<",
+  "assignmentTypeId": "c0b071ba-a9e7-11ed-afa1-0242ac120002",
+  "status": "TO_DO",
+  "endDate": "2023-02-11T22:08:28.097832",
+  "subjectId": "d3e77453-5641-4a44-a6cb-6822ede270a4"
 }
 
 ###

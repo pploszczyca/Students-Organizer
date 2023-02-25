@@ -1,15 +1,43 @@
 GET localhost:8080/material
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzczMjExMjEsYjU2NDc2NWQtM2MwMC00ZmRlLTgwMDktZWU5MTRkZTMxOTRhfQ.0aHze1YcGV6SdoFU_wc0QOOJAl6txpdxfTNzsoUyNus
 
 ###
-
+# For mock user: Pepe
 POST localhost:8080/material
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzczMjExMjEsYjU2NDc2NWQtM2MwMC00ZmRlLTgwMDktZWU5MTRkZTMxOTRhfQ.0aHze1YcGV6SdoFU_wc0QOOJAl6txpdxfTNzsoUyNus
 Content-Type: application/json
 
 {
   "name": "New Material",
   "url": "https://www.google.pl/",
-  "assignmentId": "a1e1f1e1-307f-44d7-a6b8-3fa3ccf1e5ca"
+  "assignmentId": "19cffd3f-8d85-4d21-a765-43113e532ed8"
 }
 
 ###
-DELETE localhost:8080/material/a395780e-7642-479f-8aed-3c410ee6b177
+# For mock user: Pepe
+POST localhost:8080/material
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzczMjMzNzgsN2Q2MzJlYjUtZGQwYy00MDI1LWI3MjItZjQ3NmU4MmI0M2RjfQ.sdzHSX7QY0jtAuUdVqlVc_GTG4h5zYzjPeJFHp8NHws
+Content-Type: application/json
+
+{
+  "name": "New Material",
+  "url": "https://www.google.pl/",
+  "assignmentId": "19cffd3f-8d85-4d21-a765-43113e532ed8"
+}
+
+###
+# For mock user: Karol
+POST localhost:8080/material
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzczMjMzNzgsN2Q2MzJlYjUtZGQwYy00MDI1LWI3MjItZjQ3NmU4MmI0M2RjfQ.sdzHSX7QY0jtAuUdVqlVc_GTG4h5zYzjPeJFHp8NHws
+Content-Type: application/json
+
+{
+  "name": "Important Material",
+  "url": "https://www.google.pl/",
+  "assignmentId": "df6b167d-e276-4dbd-a2b3-fb3000ac63f6"
+}
+
+
+###
+DELETE localhost:8080/material/b8e3875d-d1a0-430e-bcba-0aabc41659f4
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzczMjM5MTgsYzQ2Y2Q2M2MtMTczMi00N2NlLTkyMTktZGEzODE0ODJlZjczfQ.usS982FIgFuaUQ1-ijmCct91sHCWvQTVDs4rtgyfUYk

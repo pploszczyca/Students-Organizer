@@ -12,7 +12,7 @@ trait TokenExpirationProvider[F[_]]:
 object TokenExpirationProvider:
   def make[F[_]: Concurrent]: TokenExpirationProvider[F] =
     new TokenExpirationProvider[F]:
-      private val tokenExpirationDuration = FiniteDuration(10, MINUTES)
+      private val tokenExpirationDuration = FiniteDuration(30, MINUTES)
 
       override def provide: F[TokenExpiration] =
         tokenExpirationDuration

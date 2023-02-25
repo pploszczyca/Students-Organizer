@@ -15,3 +15,21 @@ Content-Type: application/json
   "login": "Pepe",
   "password": "test1234"
 }
+
+###
+POST localhost:8080/auth/register
+Content-Type: application/json
+
+{
+  "login": "Karol",
+  "password": "test1234"
+}
+
+###
+POST localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "login": "Karol",
+  "password": "test1234"
+}

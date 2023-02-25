@@ -23,7 +23,8 @@ class Gateways[F[_]: Async](services: Services[F]):
 
   lazy val materialRoutes: MaterialGateway[F] =
     MaterialGateway.make[F](
-      materialService = services.material
+      materialService = services.material,
+      assignmentService = services.assignment,
     )
 
   lazy val taskRoutes: TaskGateway[F] =

@@ -38,7 +38,9 @@ class AssignmentRoutes[F[_]: JsonDecoder: Sync](
         gateway
           .getBy(assignmentUUID, student.id)
           .flatMap { response => Ok(response.asJson) }
-          .handleErrorWith { case AssignmentNotFoundException => NoContent() }
+          .handleErrorWith {
+            case exception: AssignmentNotFoundException => NotFound(exception.getMessage)
+          }
 
       case request @ POST -> Root as student =>
         request.req

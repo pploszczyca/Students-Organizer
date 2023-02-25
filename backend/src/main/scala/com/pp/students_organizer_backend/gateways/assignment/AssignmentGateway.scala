@@ -2,15 +2,14 @@ package com.pp.students_organizer_backend.gateways.assignment
 
 import cats.MonadThrow
 import cats.effect.kernel.Sync
-import cats.syntax.all.{catsSyntaxApplicativeId, toFlatMapOps, toFunctorOps}
+import cats.syntax.all.{catsSyntaxApplicativeErrorId, catsSyntaxApplicativeId, toFlatMapOps, toFunctorOps}
 import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, SubjectNotFoundException}
-import com.pp.students_organizer_backend.domain.{AssignmentId, StudentId}
+import com.pp.students_organizer_backend.domain.{AssignmentEntity, AssignmentId, StudentId}
 import com.pp.students_organizer_backend.gateways.assignment.mappers.{AssignmentEntityMapper, GetAssignmentsResponseMapper, GetSingleAssignmentResponseMapper}
 import com.pp.students_organizer_backend.routes_models.assignment.request.{InsertAssignmentRequest, UpdateAssignmentRequest}
 import com.pp.students_organizer_backend.routes_models.assignment.response.{GetAssignmentsResponse, GetSingleAssignmentResponse}
 import com.pp.students_organizer_backend.services.{AssignmentService, MaterialService, SubjectService, TaskService}
 import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
-import cats.syntax.all.catsSyntaxApplicativeErrorId
 
 import java.util.UUID
 
@@ -35,7 +34,7 @@ object AssignmentGateway:
       assignmentService: AssignmentService[F],
       taskService: TaskService[F],
       materialService: MaterialService[F],
-      subjectService: SubjectService[F],
+      subjectService: SubjectService[F]
   )(using
       assignmentEntityMapper: AssignmentEntityMapper,
       getAssignmentsResponseMapper: GetAssignmentsResponseMapper,
@@ -66,7 +65,7 @@ object AssignmentGateway:
               tasks = tasks,
               materials = materials
             )
-          case None => throw AssignmentNotFoundException
+          case None => throw AssignmentNotFoundException(assignmentId)
 
       override def insert(
           request: InsertAssignmentRequest,
@@ -79,7 +78,9 @@ object AssignmentGateway:
               .getBy(assignment.subjectId, studentId)
               .flatMap {
                 case Some(_) => assignmentService.insert(assignment)
-                case None => SubjectNotFoundException(assignment.subjectId).raiseError[F, Unit]
+                case None =>
+                  SubjectNotFoundException(assignment.subjectId)
+                    .raiseError[F, Unit]
               }
           }
 
@@ -94,7 +95,9 @@ object AssignmentGateway:
               .getBy(assignment.subjectId, studentId)
               .flatMap {
                 case Some(_) => assignmentService.update(assignment)
-                case None => SubjectNotFoundException(assignment.subjectId).raiseError[F, Unit]
+                case None =>
+                  SubjectNotFoundException(assignment.subjectId)
+                    .raiseError[F, Unit]
               }
           }
 

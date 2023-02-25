@@ -7,7 +7,7 @@ import com.pp.students_organizer_backend.domain.*
 import com.pp.students_organizer_backend.gateways.assignment.mappers.{AssignmentEntityMapper, GetAssignmentsResponseMapper, GetSingleAssignmentResponseMapper}
 import com.pp.students_organizer_backend.routes_models.assignment.request.{InsertAssignmentRequest, UpdateAssignmentRequest}
 import com.pp.students_organizer_backend.routes_models.assignment.response.{GetAssignmentsResponse, GetSingleAssignmentResponse}
-import com.pp.students_organizer_backend.services.{AssignmentService, MaterialService, TaskService}
+import com.pp.students_organizer_backend.services.{AssignmentService, MaterialService, SubjectService, TaskService}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{inOrder, verify, when}
 import org.scalatest.flatspec.AnyFlatSpec
@@ -19,6 +19,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   private val assignmentService: AssignmentService[IO] = mock
   private val taskService: TaskService[IO] = mock
   private val materialService: MaterialService[IO] = mock
+  private val subjectService: SubjectService[IO] = mock
   private given mockAssignmentEntityMapper: AssignmentEntityMapper = mock
   private given mockGetAssignmentsResponseMapper: GetAssignmentsResponseMapper =
     mock
@@ -26,8 +27,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
       : GetSingleAssignmentResponseMapper = mock
 
   "ON getAllBy" should "get all assignments that belongs to student" in {
-    val studentUUID = mock[UUID]
-    val studentId = StudentId(studentUUID)
+    val studentId = mock[StudentId]
     val assignment = mock[AssignmentEntity]
     val response = mock[GetAssignmentsResponse]
     val expected = List(response)
@@ -39,7 +39,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
 
     val actual = tested(
       assignmentService = assignmentService
-    ).getAllBy(studentUUID).unsafeRunSync()
+    ).getAllBy(studentId).unsafeRunSync()
 
     val inOrderCheck = inOrder(assignmentService, getAssignmentsResponseMapper)
     inOrderCheck.verify(assignmentService).getAllBy(studentId)
@@ -48,9 +48,8 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   }
 
   "ON getBy" should "get assignment that belongs to student" in {
-    val studentUUID = mock[UUID]
     val assignmentUUID = mock[UUID]
-    val studentId = StudentId(studentUUID)
+    val studentId = mock[StudentId]
     val assignmentId = AssignmentId(assignmentUUID)
     val task = mock[TaskEntity]
     val material = mock[MaterialEntity]
@@ -71,7 +70,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
       assignmentService = assignmentService,
       taskService = taskService,
       materialService = materialService
-    ).getBy(assignmentUUID, studentUUID).unsafeRunSync()
+    ).getBy(assignmentUUID, studentId).unsafeRunSync()
 
     val inOrderCheck = inOrder(assignmentService,
                                taskService,
@@ -85,9 +84,8 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   }
 
   "ON getBy" should "throw error WHEN assignment is not found" in {
-    val studentUUID = mock[UUID]
     val assignmentUUID = mock[UUID]
-    val studentId = StudentId(studentUUID)
+    val studentId = mock[StudentId]
     val assignmentId = AssignmentId(assignmentUUID)
     val expectedException = AssignmentNotFoundException
 
@@ -100,7 +98,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
         assignmentService = assignmentService,
         taskService = taskService,
         materialService = materialService
-      ).getBy(assignmentUUID, studentUUID).unsafeRunSync()
+      ).getBy(assignmentUUID, studentId).unsafeRunSync()
     }
 
     val inOrderCheck = inOrder(assignmentService, taskService, materialService)
@@ -111,6 +109,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   }
 
   "ON insert" should "add new assignment" in {
+    val studentId = mock[StudentId]
     val request = mock[InsertAssignmentRequest]
     val assignment = mock[AssignmentEntity]
 
@@ -121,7 +120,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
 
     tested(
       assignmentService = assignmentService
-    ) .insert(request).unsafeRunSync()
+    ).insert(request, studentId).unsafeRunSync()
 
     val inOrderCheck = inOrder(assignmentEntityMapper, assignmentService)
     inOrderCheck.verify(assignmentEntityMapper).map(request)
@@ -129,6 +128,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   }
 
   "ON insert" should "throw validation exception WHEN mapper return error" in {
+    val studentId = mock[StudentId]
     val request = mock[InsertAssignmentRequest]
     val errorMessage = "errorMessage"
     val error = ValidationError(errorMessage)
@@ -139,7 +139,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
     when(assignmentEntityMapper.map(any[InsertAssignmentRequest]())) thenReturn Left(error)
 
     val actualException = intercept[ValidationException] {
-      tested().insert(request).unsafeRunSync()
+      tested().insert(request, studentId).unsafeRunSync()
     }
 
     verify(assignmentEntityMapper).map(request)
@@ -147,6 +147,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   }
 
   "ON update" should "update assignment" in {
+    val studentId = mock[StudentId]
     val request = mock[UpdateAssignmentRequest]
     val assignment = mock[AssignmentEntity]
 
@@ -157,7 +158,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
 
     tested(
       assignmentService = assignmentService
-    ).update(request).unsafeRunSync()
+    ).update(request, studentId).unsafeRunSync()
 
     val inOrderCheck = inOrder(assignmentEntityMapper, assignmentService)
     inOrderCheck.verify(assignmentEntityMapper).map(request)
@@ -165,6 +166,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   }
 
   "ON update" should "throw validation exception WHEN mapper return error" in {
+    val studentId = mock[StudentId]
     val request = mock[UpdateAssignmentRequest]
     val errorMessage = "errorMessage"
     val error = ValidationError(errorMessage)
@@ -175,7 +177,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
     when(assignmentEntityMapper.map(any[UpdateAssignmentRequest]())) thenReturn Left(error)
 
     val actualException = intercept[ValidationException] {
-      tested().update(request).unsafeRunSync()
+      tested().update(request, studentId).unsafeRunSync()
     }
 
     verify(assignmentEntityMapper).map(request)
@@ -198,7 +200,8 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   private def tested(
       assignmentService: AssignmentService[IO] = mock,
       taskService: TaskService[IO] = mock,
-      materialService: MaterialService[IO] = mock
+      materialService: MaterialService[IO] = mock,
+      subjectService: SubjectService[IO] = mock
   )(using
       assignmentEntityMapper: AssignmentEntityMapper,
       getAssignmentsResponseMapper: GetAssignmentsResponseMapper,
@@ -207,5 +210,6 @@ class AssignmentGatewayTest extends AnyFlatSpec:
     AssignmentGateway.make(
       assignmentService = assignmentService,
       taskService = taskService,
-      materialService = materialService
+      materialService = materialService,
+      subjectService = subjectService,
     )

@@ -85,5 +85,5 @@ CREATE VIEW assignment_with_student AS
 
 CREATE VIEW material_with_student AS
     SELECT m.id, m.name, m.url, m.assignment_id, aws.student_id FROM material m
-        INNER JOIN assignment_with_student aws on m.name = aws.name
+        INNER JOIN assignment_with_student aws on m.assignment_id = aws.id
 

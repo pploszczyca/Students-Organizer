@@ -40,7 +40,7 @@ class Services[F[_]: Concurrent](
   lazy val auth: AuthService[F] =
     AuthService.make(
       redis = redis,
-      tokenExpiration = TokenExpiration(FiniteDuration(10, MINUTES)) // TODO: Need to change to TokenExpirationProvider
+      tokenExpiration = TokenExpiration(FiniteDuration(30, MINUTES)) // TODO: Need to change to TokenExpirationProvider
     )
     
   lazy val subject: SubjectService[F] =

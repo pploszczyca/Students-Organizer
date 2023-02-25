@@ -24,7 +24,7 @@ trait MaterialService[F[_]]:
   def getAll(studentId: StudentId): F[List[MaterialEntity]]
   def getAllBy(assignmentId: AssignmentId): F[List[MaterialEntity]]
   def insert(material: MaterialEntity): F[Unit]
-  def remove(materialId: MaterialId): F[Unit]
+  def remove(materialId: MaterialId, studentId: StudentId): F[Unit]
 
 object MaterialService:
   def make[F[_]: Concurrent](
@@ -55,11 +55,11 @@ object MaterialService:
             .void
         }
 
-      override def remove(materialId: MaterialId): F[Unit] =
+      override def remove(materialId: MaterialId, studentId: StudentId): F[Unit] =
         database.use { session =>
           session
             .prepare(ServiceSQL.removeCommand)
-            .flatMap(_.execute(materialId))
+            .flatMap(_.execute(materialId, studentId))
             .void
         }
 
@@ -81,5 +81,7 @@ object MaterialService:
       sql"INSERT INTO material (id, name, url, assignment_id) VALUES ($materialId, $materialName, $materialUrl, $assignmentId)".command
         .gcontramap[MaterialEntity]
 
-    val removeCommand: Command[MaterialId] =
-      sql"""DELETE FROM material WHERE id=$materialId""".command
+    val removeCommand: Command[MaterialId ~ StudentId] =
+      sql"""DELETE FROM material m
+            USING material_with_student mws
+            WHERE m.id = mws.id AND m.id=$materialId AND mws.student_id=$studentId""".command
