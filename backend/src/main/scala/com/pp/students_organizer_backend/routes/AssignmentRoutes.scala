@@ -39,7 +39,7 @@ class AssignmentRoutes[F[_]: JsonDecoder: Sync](
           .getBy(assignmentUUID, student.id)
           .flatMap { response => Ok(response.asJson) }
           .handleErrorWith {
-            case exception: AssignmentNotFoundException => NotFound(exception.getMessage)
+            case exception: AssignmentNotFoundException => NotFound(exception.getMessage.asJson)
           }
 
       case request @ POST -> Root as student =>
@@ -51,7 +51,7 @@ class AssignmentRoutes[F[_]: JsonDecoder: Sync](
           .handleErrorWith {
             case ValidationException(value) => BadRequest(value.asJson)
             case exception: SubjectNotFoundException =>
-              NotFound(exception.getMessage)
+              NotFound(exception.getMessage.asJson)
           }
 
       case request @ PUT -> Root as student =>
@@ -63,7 +63,7 @@ class AssignmentRoutes[F[_]: JsonDecoder: Sync](
           .handleErrorWith {
             case ValidationException(value) => BadRequest(value.asJson)
             case exception: SubjectNotFoundException =>
-              NotFound(exception.getMessage)
+              NotFound(exception.getMessage.asJson)
           }
 
       case DELETE -> Root / UUIDVar(assignmentUUID) as student =>
