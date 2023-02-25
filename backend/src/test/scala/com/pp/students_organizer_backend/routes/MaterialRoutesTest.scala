@@ -3,13 +3,8 @@ package com.pp.students_organizer_backend.routes
 import cats.data.Kleisli
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.errors.ValidationException
-import com.pp.students_organizer_backend.domain.{
-  StudentEntity,
-  StudentId,
-  StudentName,
-  StudentPassword
-}
+import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, ValidationException}
+import com.pp.students_organizer_backend.domain.{AssignmentId, StudentEntity, StudentId, StudentName, StudentPassword}
 import com.pp.students_organizer_backend.gateways.material.MaterialGateway
 import com.pp.students_organizer_backend.routes.MaterialRoutes
 import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
@@ -23,7 +18,7 @@ import org.http4s.client.dsl.io.*
 import org.http4s.implicits.uri
 import org.http4s.server.AuthMiddleware
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{reset, verify, when}
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatestplus.mockito.MockitoSugar.mock
 
@@ -92,7 +87,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
     )
   }
 
-  "POST -> /material" should "return error WHEN exception occurs" in {
+  "POST -> /material" should "return bad request WHEN validation exception occurs" in {
     val studentId = mock[StudentId]
     val student = fakeStudent(id = studentId)
     val jsonRequest =
@@ -114,7 +109,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
             "error message"
           """
 
-    when(gateway.insert(any(), any())) thenAnswer (* => throw exception)
+    when(gateway.insert(any(), any())) thenAnswer (* => IO.raiseError(exception))
 
     val actualResponse =
       tested(gateway = gateway)(fakeAuthMiddleware(student)).orNotFound
@@ -122,6 +117,41 @@ class MaterialRoutesTest extends AnyFlatSpec:
 
     RoutesChecker.check(
       expectedStatus = Status.BadRequest,
+      expectedResponse = expectedResponse,
+      actualResponse = actualResponse
+    )
+    verify(gateway).insert(request, studentId)
+  }
+
+  "POST -> /material" should "return not found WHEN assignment not found exception occurs" in {
+    val studentId = mock[StudentId]
+    val student = fakeStudent(id = studentId)
+    val jsonRequest =
+      json"""{
+            "name": "name",
+            "url":  "www.test.com",
+            "assignmentId": "817ec3ac-23eb-421f-a898-8debfbc54b46"
+          }"""
+    val request = InsertMaterialRequest(
+      name = "name",
+      url = "www.test.com",
+      assignmentId = "817ec3ac-23eb-421f-a898-8debfbc54b46"
+    )
+    val assigmentUUID = UUID.fromString("817ec3ac-23eb-421f-a898-8debfbc54b46")
+    val exception = AssignmentNotFoundException(AssignmentId(assigmentUUID))
+    val expectedResponse =
+      json"""
+            "Assigment with id: 817ec3ac-23eb-421f-a898-8debfbc54b46 not found."
+          """
+
+    when(gateway.insert(any(), any())) thenAnswer (* => IO.raiseError(exception))
+
+    val actualResponse =
+      tested(gateway = gateway)(fakeAuthMiddleware(student)).orNotFound
+        .run(POST(jsonRequest, uri"/material"))
+
+    RoutesChecker.check(
+      expectedStatus = Status.NotFound,
       expectedResponse = expectedResponse,
       actualResponse = actualResponse
     )

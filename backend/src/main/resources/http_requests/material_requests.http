@@ -16,7 +16,7 @@ Content-Type: application/json
 ###
 # For mock user: Pepe
 POST localhost:8080/material
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzczMjMzNzgsN2Q2MzJlYjUtZGQwYy00MDI1LWI3MjItZjQ3NmU4MmI0M2RjfQ.sdzHSX7QY0jtAuUdVqlVc_GTG4h5zYzjPeJFHp8NHws
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzczMzQ2NjAsM2FiZjkyNzUtMmM5NC00M2ZjLWFjNjYtYTc1MjBmMmFlMGU4fQ.qDM1jadtVwmlrSlnjFF9O6Fq4-Fk9yvc8mTx7cvuXuw
 Content-Type: application/json
 
 {
