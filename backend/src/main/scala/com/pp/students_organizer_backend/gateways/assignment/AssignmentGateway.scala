@@ -2,13 +2,40 @@ package com.pp.students_organizer_backend.gateways.assignment
 
 import cats.MonadThrow
 import cats.effect.kernel.Sync
-import cats.syntax.all.{catsSyntaxApplicativeErrorId, catsSyntaxApplicativeId, toFlatMapOps, toFunctorOps}
-import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, SubjectNotFoundException}
-import com.pp.students_organizer_backend.domain.{AssignmentEntity, AssignmentId, StudentId}
-import com.pp.students_organizer_backend.gateways.assignment.mappers.{AssignmentEntityMapper, GetAssignmentsResponseMapper, GetSingleAssignmentResponseMapper}
-import com.pp.students_organizer_backend.routes_models.assignment.request.{InsertAssignmentRequest, UpdateAssignmentRequest}
-import com.pp.students_organizer_backend.routes_models.assignment.response.{GetAssignmentsResponse, GetSingleAssignmentResponse}
-import com.pp.students_organizer_backend.services.{AssignmentService, MaterialService, SubjectService, TaskService}
+import cats.syntax.all.{
+  catsSyntaxApplicativeErrorId,
+  catsSyntaxApplicativeId,
+  toFlatMapOps,
+  toFunctorOps
+}
+import com.pp.students_organizer_backend.domain.errors.{
+  AssignmentNotFoundException,
+  SubjectNotFoundException
+}
+import com.pp.students_organizer_backend.domain.{
+  AssignmentEntity,
+  AssignmentId,
+  StudentId
+}
+import com.pp.students_organizer_backend.gateways.assignment.mappers.{
+  AssignmentEntityMapper,
+  GetAssignmentsResponseMapper,
+  GetSingleAssignmentResponseMapper
+}
+import com.pp.students_organizer_backend.routes_models.assignment.request.{
+  InsertAssignmentRequest,
+  UpdateAssignmentRequest
+}
+import com.pp.students_organizer_backend.routes_models.assignment.response.{
+  GetAssignmentsResponse,
+  GetSingleAssignmentResponse
+}
+import com.pp.students_organizer_backend.services.{
+  AssignmentService,
+  MaterialService,
+  SubjectService,
+  TaskService
+}
 import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 
 import java.util.UUID
@@ -27,7 +54,7 @@ trait AssignmentGateway[F[_]]:
       request: UpdateAssignmentRequest,
       studentId: StudentId
   ): F[Unit]
-  def remove(assignmentId: UUID): F[Unit]
+  def remove(assignmentId: UUID, studentId: StudentId): F[Unit]
 
 object AssignmentGateway:
   def make[F[_]: Sync: MonadThrow](
@@ -101,6 +128,9 @@ object AssignmentGateway:
               }
           }
 
-      override def remove(assignmentId: UUID): F[Unit] =
+      override def remove(
+          assignmentId: UUID,
+          studentId: StudentId
+      ): F[Unit] =
         assignmentService
-          .remove(AssignmentId(assignmentId))
+          .remove(AssignmentId(assignmentId), studentId)

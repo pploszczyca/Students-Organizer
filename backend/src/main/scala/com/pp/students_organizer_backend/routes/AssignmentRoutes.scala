@@ -68,7 +68,7 @@ class AssignmentRoutes[F[_]: JsonDecoder: Sync](
 
       case DELETE -> Root / UUIDVar(assignmentUUID) as student =>
         gateway
-          .remove(assignmentUUID) *> NoContent()
+          .remove(assignmentUUID, student.id) *> NoContent()
     }
 
   override def apply(

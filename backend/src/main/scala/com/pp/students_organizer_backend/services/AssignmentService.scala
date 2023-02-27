@@ -3,7 +3,12 @@ package com.pp.students_organizer_backend.services
 import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.{toFlatMapOps, toFoldableOps, toFunctorOps}
-import com.pp.students_organizer_backend.domain.{AssignmentEntity, AssignmentId, StudentId, SubjectId}
+import com.pp.students_organizer_backend.domain.{
+  AssignmentEntity,
+  AssignmentId,
+  StudentId,
+  SubjectId
+}
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.Assignment.*
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.AssignmentType.assignmentTypeId
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.Student.studentId
@@ -19,7 +24,7 @@ trait AssignmentService[F[_]]:
   ): F[Option[AssignmentEntity]]
   def insert(assignmentEntity: AssignmentEntity): F[Unit]
   def update(assignmentEntity: AssignmentEntity): F[Unit]
-  def remove(assignmentId: AssignmentId): F[Unit]
+  def remove(assignmentId: AssignmentId, studentId: StudentId): F[Unit]
 
 object AssignmentService:
   def make[F[_]: Concurrent](
@@ -67,11 +72,14 @@ object AssignmentService:
             .void
         }
 
-      override def remove(assignmentId: AssignmentId): F[Unit] =
+      override def remove(
+          assignmentId: AssignmentId,
+          studentId: StudentId
+      ): F[Unit] =
         database.use { session =>
           session
             .prepare(ServiceSQL.removeCommand)
-            .flatMap(_.execute(assignmentId))
+            .flatMap(_.execute(assignmentId, studentId))
             .void
         }
 
@@ -126,5 +134,9 @@ object AssignmentService:
             ~ assignment.endDate ~ assignment.subjectId ~ assignment.id
         }
 
-    val removeCommand: Command[AssignmentId] =
-      sql"DELETE FROM assignment WHERE id = $assignmentId".command
+    val removeCommand: Command[AssignmentId ~ StudentId] =
+      sql"""
+        DELETE FROM assignment a
+               USING assignment_with_student aws
+               WHERE a.id = $assignmentId AND a.id = aws.id = a.id AND aws.student_id = $studentId 
+           """.command

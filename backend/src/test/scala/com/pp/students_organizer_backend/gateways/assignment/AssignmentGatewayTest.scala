@@ -267,14 +267,15 @@ class AssignmentGatewayTest extends AnyFlatSpec:
   "ON remove" should "remove assignment" in {
     val assignmentUUID = mock[UUID]
     val assignmentId = AssignmentId(assignmentUUID)
+    val studentId = mock[StudentId]
 
-    when(assignmentService.remove(assignmentId)) thenReturn IO.unit
+    when(assignmentService.remove(any() ,any())) thenReturn IO.unit
 
     tested(
       assignmentService = assignmentService
-    ).remove(assignmentUUID).unsafeRunSync()
+    ).remove(assignmentUUID, studentId).unsafeRunSync()
 
-    verify(assignmentService).remove(assignmentId)
+    verify(assignmentService).remove(assignmentId, studentId)
   }
 
   private def fakeAssignment(
