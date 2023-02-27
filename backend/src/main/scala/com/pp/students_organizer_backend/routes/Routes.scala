@@ -61,6 +61,6 @@ class Routes[F[_]: Async](
   lazy val allRoutes: HttpRoutes[F] =
     assignmentType() <+>
       material(studentMiddleware) <+>
-      task() <+>
+      task(studentMiddleware) <+>
       assignment(studentMiddleware) <+>
       auth()
