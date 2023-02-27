@@ -29,7 +29,8 @@ class Gateways[F[_]: Async](services: Services[F]):
 
   lazy val taskRoutes: TaskGateway[F] =
     TaskGateway.make[F](
-      taskService = services.task
+      taskService = services.task,
+      assignmentService = services.assignment,
     )
 
   lazy val assignmentRoutes: AssignmentGateway[F] =

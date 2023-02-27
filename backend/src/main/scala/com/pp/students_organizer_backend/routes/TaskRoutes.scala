@@ -4,10 +4,7 @@ import cats.effect.Sync
 import cats.syntax.all.{catsSyntaxApplicativeError, catsSyntaxApply}
 import cats.syntax.flatMap.toFlatMapOps
 import com.pp.students_organizer_backend.domain.StudentEntity
-import com.pp.students_organizer_backend.domain.errors.{
-  ValidationError,
-  ValidationException
-}
+import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, ValidationError, ValidationException}
 import com.pp.students_organizer_backend.gateways.task.TaskGateway
 import com.pp.students_organizer_backend.routes_models.task.request.InsertTaskRequest
 import io.circe.generic.auto.*
@@ -26,7 +23,7 @@ class TaskRoutes[F[_]: JsonDecoder: Sync](
   private lazy val routes: AuthedRoutes[StudentEntity, F] =
     AuthedRoutes.of {
       case GET -> Root as student =>
-        gateway.getAll
+        gateway.getAll(student.id)
           .flatMap { responses => Ok(responses.asJson) }
 
       case request @ POST -> Root as student =>
@@ -34,15 +31,16 @@ class TaskRoutes[F[_]: JsonDecoder: Sync](
           .req
           .asJsonDecode[InsertTaskRequest]
           .flatMap { request =>
-            gateway.insert(request) *> Created()
+            gateway.insert(request, student.id) *> Created()
           }
-          .handleErrorWith { case ValidationException(value) =>
-            BadRequest(value.asJson)
+          .handleErrorWith {
+            case ValidationException(value) => BadRequest(value.asJson)
+            case exception: AssignmentNotFoundException => NotFound(exception.getMessage.asJson)
           }
 
       case DELETE -> Root / UUIDVar(taskId) as student =>
         gateway
-          .remove(taskId) *> NoContent()
+          .remove(taskId, student.id) *> NoContent()
     }
 
   override def apply(
