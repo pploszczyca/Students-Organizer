@@ -12,7 +12,7 @@ Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzcxNTc2O
 # For mock user: Pepe
 POST localhost:8080/assignment
 Content-Type: application/json
-Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NzcyMzk1NDEsYTM1NmE5ZTEtOGE4MC00ZWFmLWIyNTMtMTVmNTY0NDhlNDNjfQ.I2UmE0-i23Yb0MZCrnb-ndIqmGhAlilJ5VVRlejz_X8
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2Nzc5NTg5MzQsODFmMzBlYTQtMjBjOC00YzEyLWJiYzktYjE0MzJlMjczNDM2fQ.rylEGwOHdK5ljn-mgrMU154LataUlxusnklc4ZO2Nb0
 
 {
   "name": "Learn for Test 1",

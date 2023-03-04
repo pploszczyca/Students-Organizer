@@ -1,15 +1,19 @@
 GET localhost:8080/task
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2Nzc5NTg5MzQsODFmMzBlYTQtMjBjOC00YzEyLWJiYzktYjE0MzJlMjczNDM2fQ.rylEGwOHdK5ljn-mgrMU154LataUlxusnklc4ZO2Nb0
 
 ###
 
 POST localhost:8080/task
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2Nzc5NTg5MzQsODFmMzBlYTQtMjBjOC00YzEyLWJiYzktYjE0MzJlMjczNDM2fQ.rylEGwOHdK5ljn-mgrMU154LataUlxusnklc4ZO2Nb0
+
 
 {
   "name": "New Task",
   "isDone": false,
-  "assignmentId": "a1e1f1e1-307f-44d7-a6b8-3fa3ccf1e5ca"
+  "assignmentId": "1f70ba70-d37a-459a-94b4-f97bd0c70f52"
 }
 
 ###
-DELETE localhost:8080/task/95441c4a-ece1-4828-9179-006b587ead36
+DELETE localhost:8080/task/1d01934b-0ff9-4082-b03b-728ee1ecaf0b
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2Nzc5NTg5MzQsODFmMzBlYTQtMjBjOC00YzEyLWJiYzktYjE0MzJlMjczNDM2fQ.rylEGwOHdK5ljn-mgrMU154LataUlxusnklc4ZO2Nb0
