@@ -33,15 +33,17 @@ class Services[F[_]: Concurrent](
 
   lazy val assignment: AssignmentService[F] =
     AssignmentService.make(database)
-    
+
   lazy val student: StudentService[F] =
     StudentService.make(database)
 
   lazy val auth: AuthService[F] =
     AuthService.make(
       redis = redis,
-      tokenExpiration = TokenExpiration(FiniteDuration(30, MINUTES)) // TODO: Need to change to TokenExpirationProvider
+      tokenExpiration = TokenExpiration(
+        FiniteDuration(30, MINUTES)
+      ) // TODO: Need to change to TokenExpirationProvider
     )
-    
+
   lazy val subject: SubjectService[F] =
     SubjectService.make(database)

@@ -125,7 +125,6 @@ class AssignmentTypeRoutesTest extends AnyFlatSpec:
   }
 
   private def tested(
-      gateway: AssignmentTypeGateway[IO] =
-        mock[AssignmentTypeGateway[IO]]
+      gateway: AssignmentTypeGateway[IO] = mock[AssignmentTypeGateway[IO]]
   ): AssignmentTypeRoutes[IO] =
     AssignmentTypeRoutes(gateway)

@@ -4,13 +4,12 @@ import cats.data.Kleisli
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
 import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, ValidationException}
-import com.pp.students_organizer_backend.domain.{AssignmentId, StudentEntity, StudentId, StudentName, StudentPassword}
+import com.pp.students_organizer_backend.domain.*
 import com.pp.students_organizer_backend.gateways.material.MaterialGateway
 import com.pp.students_organizer_backend.routes.MaterialRoutes
 import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes_models.material.response.GetMaterialResponse
-import com.pp.students_organizer_backend.test_utils.Fakes
-import com.pp.students_organizer_backend.test_utils.RoutesChecker
+import com.pp.students_organizer_backend.test_utils.{Fakes, RoutesChecker}
 import io.circe.literal.json
 import org.http4s.Method.{DELETE, GET, POST}
 import org.http4s.Status
@@ -110,7 +109,9 @@ class MaterialRoutesTest extends AnyFlatSpec:
             "error message"
           """
 
-    when(gateway.insert(any(), any())) thenAnswer (* => IO.raiseError(exception))
+    when(gateway.insert(any(), any())) thenAnswer (* =>
+      IO.raiseError(exception)
+    )
 
     val actualResponse =
       tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
@@ -145,7 +146,9 @@ class MaterialRoutesTest extends AnyFlatSpec:
             "Assigment with id: 817ec3ac-23eb-421f-a898-8debfbc54b46 not found."
           """
 
-    when(gateway.insert(any(), any())) thenAnswer (* => IO.raiseError(exception))
+    when(gateway.insert(any(), any())) thenAnswer (* =>
+      IO.raiseError(exception)
+    )
 
     val actualResponse =
       tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound

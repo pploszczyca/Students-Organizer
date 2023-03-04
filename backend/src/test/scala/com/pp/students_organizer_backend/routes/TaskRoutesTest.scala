@@ -3,8 +3,8 @@ package com.pp.students_organizer_backend.routes
 import cats.data.Kleisli
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.{AssignmentId, StudentEntity, StudentId}
 import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, ValidationException}
+import com.pp.students_organizer_backend.domain.{AssignmentId, StudentEntity, StudentId}
 import com.pp.students_organizer_backend.gateways.task.TaskGateway
 import com.pp.students_organizer_backend.routes_models.task.request.InsertTaskRequest
 import com.pp.students_organizer_backend.routes_models.task.response.GetTaskResponse
@@ -43,8 +43,9 @@ class TaskRoutesTest extends AnyFlatSpec:
 
     when(gateway.getAll(any())) thenReturn IO(List(taskResponse))
 
-    val actualResponse = tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
-      .run(GET(uri"/task"))
+    val actualResponse =
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
+        .run(GET(uri"/task"))
 
     RoutesChecker.check(
       expectedStatus = Status.Ok,
@@ -71,9 +72,10 @@ class TaskRoutesTest extends AnyFlatSpec:
 
     when(gateway.insert(any(), any())) thenReturn IO.unit
 
-    val actualResponse = tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
-      .run(POST(jsonRequest, uri"/task"))
-      .unsafeRunSync()
+    val actualResponse =
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
+        .run(POST(jsonRequest, uri"/task"))
+        .unsafeRunSync()
 
     verify(gateway).insert(request, studentId)
     RoutesChecker.checkStatus(
@@ -103,10 +105,13 @@ class TaskRoutesTest extends AnyFlatSpec:
             "error message"
           """
 
-    when(gateway.insert(any(), any())) thenAnswer (* => IO.raiseError(exception))
+    when(gateway.insert(any(), any())) thenAnswer (* =>
+      IO.raiseError(exception)
+    )
 
-    val actualResponse = tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
-      .run(POST(jsonRequest, uri"/task"))
+    val actualResponse =
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
+        .run(POST(jsonRequest, uri"/task"))
 
     RoutesChecker.check(
       expectedStatus = Status.BadRequest,
@@ -137,10 +142,13 @@ class TaskRoutesTest extends AnyFlatSpec:
             "Assigment with id: 817ec3ac-23eb-421f-a898-8debfbc54b46 not found."
           """
 
-    when(gateway.insert(any(), any())) thenAnswer (* => IO.raiseError(exception))
+    when(gateway.insert(any(), any())) thenAnswer (* =>
+      IO.raiseError(exception)
+    )
 
-    val actualResponse = tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
-      .run(POST(jsonRequest, uri"/task"))
+    val actualResponse =
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
+        .run(POST(jsonRequest, uri"/task"))
 
     RoutesChecker.check(
       expectedStatus = Status.NotFound,
@@ -157,9 +165,10 @@ class TaskRoutesTest extends AnyFlatSpec:
 
     when(gateway.remove(any(), any())) thenReturn IO.unit
 
-    val actualResponse = tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
-      .run(DELETE(uri"/task/3efe9e6d-4163-40e5-8ea0-aebe46b502c4"))
-      .unsafeRunSync()
+    val actualResponse =
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
+        .run(DELETE(uri"/task/3efe9e6d-4163-40e5-8ea0-aebe46b502c4"))
+        .unsafeRunSync()
 
     verify(gateway).remove(taskUUID, studentId)
     RoutesChecker.checkStatus(

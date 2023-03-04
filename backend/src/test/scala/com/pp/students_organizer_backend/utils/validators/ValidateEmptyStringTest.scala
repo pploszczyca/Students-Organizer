@@ -23,4 +23,3 @@ class ValidateEmptyStringTest extends AnyFlatSpec:
 
     assert(actual == expected)
   }
-

@@ -6,5 +6,6 @@ sealed trait AuthException extends Exception
 case class StudentNotFound(private val name: StudentName) extends AuthException:
   override def getMessage: String = s"Student $name not found."
 
-case class StudentPasswordIsIncorrect(private val name: StudentName) extends AuthException:
+case class StudentPasswordIsIncorrect(private val name: StudentName)
+    extends AuthException:
   override def getMessage: String = s"$name's password is incorrect. Try again."

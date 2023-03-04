@@ -23,19 +23,20 @@ class TaskRoutes[F[_]: JsonDecoder: Sync](
   private lazy val routes: AuthedRoutes[StudentEntity, F] =
     AuthedRoutes.of {
       case GET -> Root as student =>
-        gateway.getAll(student.id)
+        gateway
+          .getAll(student.id)
           .flatMap { responses => Ok(responses.asJson) }
 
       case request @ POST -> Root as student =>
-        request
-          .req
+        request.req
           .asJsonDecode[InsertTaskRequest]
           .flatMap { request =>
             gateway.insert(request, student.id) *> Created()
           }
           .handleErrorWith {
             case ValidationException(value) => BadRequest(value.asJson)
-            case exception: AssignmentNotFoundException => NotFound(exception.getMessage.asJson)
+            case exception: AssignmentNotFoundException =>
+              NotFound(exception.getMessage.asJson)
           }
 
       case DELETE -> Root / UUIDVar(taskId) as student =>

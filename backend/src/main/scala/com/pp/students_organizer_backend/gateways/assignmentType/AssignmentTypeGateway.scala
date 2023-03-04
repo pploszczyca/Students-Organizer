@@ -2,18 +2,9 @@ package com.pp.students_organizer_backend.gateways.assignmentType
 
 import cats.effect.Sync
 import cats.syntax.all.{catsSyntaxApplicativeId, toFunctorOps}
-import com.pp.students_organizer_backend.domain.errors.{
-  ValidationError,
-  ValidationException
-}
-import com.pp.students_organizer_backend.domain.{
-  AssignmentTypeEntity,
-  AssignmentTypeId
-}
-import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{
-  AssignmentTypeEntityMapper,
-  GetAssignmentTypeResponseMapper
-}
+import com.pp.students_organizer_backend.domain.errors.{ValidationError, ValidationException}
+import com.pp.students_organizer_backend.domain.{AssignmentTypeEntity, AssignmentTypeId}
+import com.pp.students_organizer_backend.gateways.assignmentType.mappers.{AssignmentTypeEntityMapper, GetAssignmentTypeResponseMapper}
 import com.pp.students_organizer_backend.routes_models.assignmentType.request.InsertAssignmentTypeRequest
 import com.pp.students_organizer_backend.routes_models.assignmentType.response.GetAssignmentTypeResponse
 import com.pp.students_organizer_backend.services.AssignmentTypeService

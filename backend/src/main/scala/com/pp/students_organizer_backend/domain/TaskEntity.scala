@@ -9,14 +9,14 @@ case class TaskEntity(
     id: TaskId,
     name: TaskName,
     isDone: TaskIsDone,
-    assignmentId: AssignmentId,
+    assignmentId: AssignmentId
 )
 
 object TaskEntity:
   def create(
       name: String,
       isDone: Boolean,
-      assignmentId: AssignmentId,
+      assignmentId: AssignmentId
   ): Either[ValidationError, TaskEntity] =
     for
       taskId <- TaskId.create()
@@ -26,7 +26,7 @@ object TaskEntity:
       id = taskId,
       name = taskName,
       isDone = taskIsDone,
-      assignmentId = assignmentId,
+      assignmentId = assignmentId
     )
 
 case class TaskId(value: UUID)

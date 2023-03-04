@@ -27,7 +27,9 @@ object AuthService:
       tokenExpiration: TokenExpiration
   ): AuthService[F] =
     new AuthService[F]:
-      override def findStudentBy(token: JwtToken)(claim: JwtClaim): F[Option[StudentEntity]] =
+      override def findStudentBy(
+          token: JwtToken
+      )(claim: JwtClaim): F[Option[StudentEntity]] =
         redis.use {
           _.get(token.value)
             .map {
@@ -53,7 +55,10 @@ object AuthService:
             student.asJson.noSpaces,
             tokenExpiration.value
           ) *>
-            command.setEx(student.name.value, token.value, tokenExpiration.value)
+            command.setEx(student.name.value,
+                          token.value,
+                          tokenExpiration.value
+            )
         }
 
       override def delete(

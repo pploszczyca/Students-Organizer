@@ -4,10 +4,7 @@ import cats.effect.{Async, Resource}
 import cats.syntax.all.toSemigroupKOps
 import com.pp.students_organizer_backend.domain.StudentEntity
 import com.pp.students_organizer_backend.gateways.Gateways
-import com.pp.students_organizer_backend.services.{
-  AssignmentTypeService,
-  Services
-}
+import com.pp.students_organizer_backend.services.{AssignmentTypeService, Services}
 import dev.profunktor.auth.JwtAuthMiddleware
 import dev.profunktor.auth.jwt.{JwtAuth, JwtSymmetricAuth, JwtToken}
 import org.http4s.HttpRoutes

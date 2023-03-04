@@ -4,16 +4,9 @@ import cats.effect.Sync
 import cats.implicits.catsSyntaxApply
 import cats.syntax.all.{catsSyntaxApplicativeError, toFlatMapOps}
 import com.pp.students_organizer_backend.domain.StudentEntity
-import com.pp.students_organizer_backend.domain.errors.{
-  AssignmentNotFoundException,
-  SubjectNotFoundException,
-  ValidationException
-}
+import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, SubjectNotFoundException, ValidationException}
 import com.pp.students_organizer_backend.gateways.assignment.AssignmentGateway
-import com.pp.students_organizer_backend.routes_models.assignment.request.{
-  InsertAssignmentRequest,
-  UpdateAssignmentRequest
-}
+import com.pp.students_organizer_backend.routes_models.assignment.request.{InsertAssignmentRequest, UpdateAssignmentRequest}
 import io.circe.generic.auto.*
 import io.circe.syntax.*
 import org.http4s.circe.{JsonDecoder, jsonEncoder, toMessageSyntax}
@@ -38,8 +31,8 @@ class AssignmentRoutes[F[_]: JsonDecoder: Sync](
         gateway
           .getBy(assignmentUUID, student.id)
           .flatMap { response => Ok(response.asJson) }
-          .handleErrorWith {
-            case exception: AssignmentNotFoundException => NotFound(exception.getMessage.asJson)
+          .handleErrorWith { case exception: AssignmentNotFoundException =>
+            NotFound(exception.getMessage.asJson)
           }
 
       case request @ POST -> Root as student =>

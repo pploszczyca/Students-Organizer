@@ -1,9 +1,6 @@
 package com.pp.students_organizer_backend.routes_models.assignment.response
 
-import com.pp.students_organizer_backend.routes_models.assignment.response.GetSingleAssignmentResponse.{
-  Material,
-  Task
-}
+import com.pp.students_organizer_backend.routes_models.assignment.response.GetSingleAssignmentResponse.{Material, Task}
 
 import java.time.LocalDateTime
 import java.util.UUID

@@ -17,9 +17,9 @@ import java.util.UUID
 
 class AssignmentTypeGatewayTest extends AnyFlatSpec:
   private val assignmentTypeService: AssignmentTypeService[IO] = mock
-  private given getAssignmentTypeResponseMapper: GetAssignmentTypeResponseMapper = mock
+  private given getAssignmentTypeResponseMapper
+      : GetAssignmentTypeResponseMapper = mock
   private given assignmentTypeEntityMapper: AssignmentTypeEntityMapper = mock
-
 
   "ON getAll" should "return all assignment types as response" in {
     val assignmentType = mock[AssignmentTypeEntity]
@@ -53,7 +53,8 @@ class AssignmentTypeGatewayTest extends AnyFlatSpec:
       assignmentTypeService = assignmentTypeService
     ).insert(insertRequest).unsafeRunSync()
 
-    val inOrderCheck = inOrder(assignmentTypeEntityMapper, assignmentTypeService)
+    val inOrderCheck =
+      inOrder(assignmentTypeEntityMapper, assignmentTypeService)
     inOrderCheck.verify(assignmentTypeEntityMapper).map(insertRequest)
     inOrderCheck.verify(assignmentTypeService).insert(assignmentType)
   }

@@ -2,31 +2,13 @@ package com.pp.students_organizer_backend.gateways.material
 
 import cats.MonadThrow
 import cats.effect.kernel.Sync
-import cats.syntax.all.{
-  catsSyntaxApplicativeErrorId,
-  toFlatMapOps,
-  toFunctorOps
-}
-import com.pp.students_organizer_backend.domain.errors.{
-  AssignmentNotFoundException,
-  ValidationError,
-  ValidationException
-}
-import com.pp.students_organizer_backend.domain.{
-  MaterialEntity,
-  MaterialId,
-  StudentId
-}
-import com.pp.students_organizer_backend.gateways.material.mappers.{
-  GetMaterialResponseMapper,
-  MaterialEntityMapper
-}
+import cats.syntax.all.{catsSyntaxApplicativeErrorId, toFlatMapOps, toFunctorOps}
+import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, ValidationError, ValidationException}
+import com.pp.students_organizer_backend.domain.{MaterialEntity, MaterialId, StudentId}
+import com.pp.students_organizer_backend.gateways.material.mappers.{GetMaterialResponseMapper, MaterialEntityMapper}
 import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes_models.material.response.GetMaterialResponse
-import com.pp.students_organizer_backend.services.{
-  AssignmentService,
-  MaterialService
-}
+import com.pp.students_organizer_backend.services.{AssignmentService, MaterialService}
 import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 
 import java.util.UUID
@@ -39,7 +21,7 @@ trait MaterialGateway[F[_]]:
 object MaterialGateway:
   def make[F[_]: Sync: MonadThrow](
       materialService: MaterialService[F],
-      assignmentService: AssignmentService[F],
+      assignmentService: AssignmentService[F]
   )(using
       getMaterialResponseMapper: GetMaterialResponseMapper,
       materialEntityMapper: MaterialEntityMapper

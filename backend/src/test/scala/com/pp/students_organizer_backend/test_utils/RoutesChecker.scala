@@ -20,7 +20,7 @@ object RoutesChecker extends Assertions:
     checkStatus(response, expectedStatus)
     checkBodyResponse(response, expectedResponse)
   }
-  
+
   def checkStatus(
       response: Response[IO],
       expectedStatus: Status

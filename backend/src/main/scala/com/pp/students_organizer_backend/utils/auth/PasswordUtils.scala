@@ -1,9 +1,6 @@
 package com.pp.students_organizer_backend.utils.auth
 
-import com.pp.students_organizer_backend.domain.{
-  StudentEncodedPassword,
-  StudentPassword
-}
+import com.pp.students_organizer_backend.domain.{StudentEncodedPassword, StudentPassword}
 
 import java.util.Base64
 

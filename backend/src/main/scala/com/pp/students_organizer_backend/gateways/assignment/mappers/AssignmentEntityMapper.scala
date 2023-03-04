@@ -1,15 +1,8 @@
 package com.pp.students_organizer_backend.gateways.assignment.mappers
 
 import com.pp.students_organizer_backend.domain.errors.ValidationError
-import com.pp.students_organizer_backend.domain.{
-  AssignmentEntity,
-  AssignmentTypeId,
-  SubjectId
-}
-import com.pp.students_organizer_backend.routes_models.assignment.request.{
-  InsertAssignmentRequest,
-  UpdateAssignmentRequest
-}
+import com.pp.students_organizer_backend.domain.{AssignmentEntity, AssignmentTypeId, SubjectId}
+import com.pp.students_organizer_backend.routes_models.assignment.request.{InsertAssignmentRequest, UpdateAssignmentRequest}
 
 trait AssignmentEntityMapper:
   def map(

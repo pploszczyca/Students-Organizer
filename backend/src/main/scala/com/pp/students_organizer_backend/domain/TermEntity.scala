@@ -9,7 +9,7 @@ case class TermEntity(
     id: TermId,
     number: TermNumber,
     year: TermYear,
-    studentId: StudentId,
+    studentId: StudentId
 )
 object TermEntity:
   def create(
@@ -25,7 +25,7 @@ object TermEntity:
       id = termId,
       number = termNumber,
       year = termYear,
-      studentId = studentId,
+      studentId = studentId
     )
 
 case class TermId(value: UUID)

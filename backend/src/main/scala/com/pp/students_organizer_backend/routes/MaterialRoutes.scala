@@ -36,7 +36,8 @@ class MaterialRoutes[F[_]: JsonDecoder: Sync](
           }
           .handleErrorWith {
             case ValidationException(value) => BadRequest(value.asJson)
-            case exception: AssignmentNotFoundException => NotFound(exception.getMessage.asJson)
+            case exception: AssignmentNotFoundException =>
+              NotFound(exception.getMessage.asJson)
           }
 
       case DELETE -> Root / UUIDVar(materialId) as student =>

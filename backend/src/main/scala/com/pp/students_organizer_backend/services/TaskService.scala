@@ -8,7 +8,7 @@ import com.pp.students_organizer_backend.services.database.DatabaseCodec.Assignm
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.Student.studentId
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.TaskEntity.{taskId, taskIsDone, taskName}
 import skunk.implicits.sql
-import skunk.{Command, Query, Session, Void, ~}
+import skunk.*
 
 trait TaskService[F[_]]:
   def getAll(studentId: StudentId): F[List[TaskEntity]]

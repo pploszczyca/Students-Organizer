@@ -129,10 +129,11 @@ class AssignmentGatewayTest extends AnyFlatSpec:
 
     tested(
       assignmentService = assignmentService,
-      subjectService = subjectService,
+      subjectService = subjectService
     ).insert(request, studentId).unsafeRunSync()
 
-    val inOrderCheck = inOrder(assignmentEntityMapper, subjectService, assignmentService)
+    val inOrderCheck =
+      inOrder(assignmentEntityMapper, subjectService, assignmentService)
     inOrderCheck.verify(assignmentEntityMapper).map(request)
     inOrderCheck.verify(subjectService).getBy(subjectId, studentId)
     inOrderCheck.verify(assignmentService).insert(assignment)
@@ -177,7 +178,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
 
     val actualException = intercept[SubjectNotFoundException] {
       tested(
-        subjectService = subjectService,
+        subjectService = subjectService
       ).insert(request, studentId).unsafeRunSync()
     }
 
@@ -206,10 +207,11 @@ class AssignmentGatewayTest extends AnyFlatSpec:
 
     tested(
       assignmentService = assignmentService,
-      subjectService = subjectService,
+      subjectService = subjectService
     ).update(request, studentId).unsafeRunSync()
 
-    val inOrderCheck = inOrder(assignmentEntityMapper, subjectService, assignmentService)
+    val inOrderCheck =
+      inOrder(assignmentEntityMapper, subjectService, assignmentService)
     inOrderCheck.verify(assignmentEntityMapper).map(request)
     inOrderCheck.verify(subjectService).getBy(subjectId, studentId)
     inOrderCheck.verify(assignmentService).update(assignment)
@@ -269,7 +271,7 @@ class AssignmentGatewayTest extends AnyFlatSpec:
     val assignmentId = AssignmentId(assignmentUUID)
     val studentId = mock[StudentId]
 
-    when(assignmentService.remove(any() ,any())) thenReturn IO.unit
+    when(assignmentService.remove(any(), any())) thenReturn IO.unit
 
     tested(
       assignmentService = assignmentService

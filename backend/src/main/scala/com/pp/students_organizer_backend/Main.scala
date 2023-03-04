@@ -6,7 +6,7 @@ import com.pp.students_organizer_backend.routes.Routes
 import com.pp.students_organizer_backend.services.Services
 import com.pp.students_organizer_backend.services.database.{Database, RedisProvider}
 import dev.profunktor.redis4cats.effect.Log
-import dev.profunktor.redis4cats.effect.Log.Stdout._
+import dev.profunktor.redis4cats.effect.Log.Stdout.*
 
 object Main extends IOApp.Simple:
 
@@ -18,7 +18,7 @@ object Main extends IOApp.Simple:
     val gateways = Gateways.make(services = services)
     val routes = Routes.make(
       gateways = gateways,
-      authenticate = services.auth.findStudentBy,
+      authenticate = services.auth.findStudentBy
     )
 
     Server[IO](routes).stream.compile.drain.as(ExitCode.Success)

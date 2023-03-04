@@ -2,8 +2,8 @@ package com.pp.students_organizer_backend.gateways.task
 
 import cats.effect.IO
 import cats.effect.unsafe.implicits.global
-import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, ValidationError, ValidationException}
 import com.pp.students_organizer_backend.domain.*
+import com.pp.students_organizer_backend.domain.errors.{AssignmentNotFoundException, ValidationError, ValidationException}
 import com.pp.students_organizer_backend.gateways.task.mappers.{GetTaskResponseMapper, TaskEntityMapper}
 import com.pp.students_organizer_backend.routes_models.task.request.InsertTaskRequest
 import com.pp.students_organizer_backend.routes_models.task.response.GetTaskResponse
@@ -66,7 +66,7 @@ class TaskGatewayTest extends AnyFlatSpec:
     val request = mock[InsertTaskRequest]
     val assignmentId = mock[AssignmentId]
     val task = fakeTask(
-      assignmentId = assignmentId,
+      assignmentId = assignmentId
     )
     val assignment = mock[AssignmentEntity]
 
@@ -78,7 +78,7 @@ class TaskGatewayTest extends AnyFlatSpec:
 
     tested(
       taskService = taskService,
-      assignmentService = assignmentService,
+      assignmentService = assignmentService
     ).insert(request, studentId).unsafeRunSync()
 
     val inOrderCheck = inOrder(taskEntityMapper, assignmentService, taskService)
@@ -92,7 +92,7 @@ class TaskGatewayTest extends AnyFlatSpec:
     val request = mock[InsertTaskRequest]
     val assignmentId = mock[AssignmentId]
     val task = fakeTask(
-      assignmentId = assignmentId,
+      assignmentId = assignmentId
     )
     val expectedException = AssignmentNotFoundException(assignmentId)
 
@@ -103,7 +103,7 @@ class TaskGatewayTest extends AnyFlatSpec:
 
     val actualException = intercept[AssignmentNotFoundException] {
       tested(
-        assignmentService = assignmentService,
+        assignmentService = assignmentService
       ).insert(request, studentId).unsafeRunSync()
     }
 

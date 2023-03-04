@@ -45,7 +45,7 @@ class MaterialGatewayTest extends AnyFlatSpec:
     val request = mock[InsertMaterialRequest]
     val assignmentId = mock[AssignmentId]
     val material = fakeMaterial(
-      assignmentId = assignmentId,
+      assignmentId = assignmentId
     )
     val expectedException = AssignmentNotFoundException(assignmentId)
 
@@ -71,7 +71,7 @@ class MaterialGatewayTest extends AnyFlatSpec:
     val request = mock[InsertMaterialRequest]
     val assignmentId = mock[AssignmentId]
     val material = fakeMaterial(
-      assignmentId = assignmentId,
+      assignmentId = assignmentId
     )
     val assignment = mock[AssignmentEntity]
 
@@ -83,10 +83,11 @@ class MaterialGatewayTest extends AnyFlatSpec:
 
     tested(
       materialService = materialService,
-      assignmentService = assignmentService,
+      assignmentService = assignmentService
     ).insert(request, studentId).unsafeRunSync()
 
-    val inOrderCheck = inOrder(materialEntityMapper, assignmentService, materialService)
+    val inOrderCheck =
+      inOrder(materialEntityMapper, assignmentService, materialService)
     inOrderCheck.verify(materialEntityMapper).map(request)
     inOrderCheck.verify(assignmentService).get(assignmentId, studentId)
     inOrderCheck.verify(materialService).insert(material)

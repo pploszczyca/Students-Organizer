@@ -38,7 +38,7 @@ object MaterialEntity:
       id = UUID.randomUUID(),
       name = name,
       url = url,
-      assignmentId = assignmentId,
+      assignmentId = assignmentId
     )
 
 case class MaterialId(value: UUID)

@@ -3,22 +3,18 @@ package com.pp.students_organizer_backend.services
 import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.toFlatMapOps
-import com.pp.students_organizer_backend.domain.{
-  StudentId,
-  SubjectEntity,
-  SubjectId
-}
+import com.pp.students_organizer_backend.domain.{StudentId, SubjectEntity, SubjectId}
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.Student.studentId
-import com.pp.students_organizer_backend.services.database.DatabaseCodec.Subject.{
-  subjectId,
-  subjectName
-}
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Subject.{subjectId, subjectName}
 import com.pp.students_organizer_backend.services.database.DatabaseCodec.Term.termId
 import skunk.implicits.sql
 import skunk.{Query, Session, ~}
 
 trait SubjectService[F[_]]:
-  def getBy(subjectId: SubjectId, studentId: StudentId): F[Option[SubjectEntity]]
+  def getBy(
+      subjectId: SubjectId,
+      studentId: StudentId
+  ): F[Option[SubjectEntity]]
 
 object SubjectService:
   def make[F[_]: Concurrent](

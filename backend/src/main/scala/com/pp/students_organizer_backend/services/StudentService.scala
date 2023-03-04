@@ -4,11 +4,7 @@ import cats.effect.Resource
 import cats.effect.kernel.Concurrent
 import cats.syntax.all.{toFlatMapOps, toFoldableOps, toFunctorOps}
 import com.pp.students_organizer_backend.domain.{StudentEntity, StudentName}
-import com.pp.students_organizer_backend.services.database.DatabaseCodec.Student.{
-  studentId,
-  studentName,
-  studentPassword
-}
+import com.pp.students_organizer_backend.services.database.DatabaseCodec.Student.{studentId, studentName, studentPassword}
 import skunk.implicits.sql
 import skunk.{Command, Query, Session}
 

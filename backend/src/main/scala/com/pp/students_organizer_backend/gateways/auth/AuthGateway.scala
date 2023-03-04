@@ -3,7 +3,7 @@ package com.pp.students_organizer_backend.gateways.auth
 import cats.MonadThrow
 import cats.effect.kernel.Concurrent
 import cats.implicits.catsSyntaxApply
-import cats.syntax.all.{catsSyntaxApplicativeErrorId, toFlatMapOps, toFunctorOps}
+import cats.syntax.all.{catsSyntaxApplicativeErrorId, catsSyntaxApplicativeId, toFlatMapOps, toFunctorOps}
 import com.pp.students_organizer_backend.domain.errors.{StudentNotFound, StudentPasswordIsIncorrect}
 import com.pp.students_organizer_backend.domain.{StudentEncodedPassword, StudentEntity, StudentName}
 import com.pp.students_organizer_backend.gateways.auth.mappers.StudentEntityMapper
@@ -13,7 +13,6 @@ import com.pp.students_organizer_backend.services.{AuthService, StudentService}
 import com.pp.students_organizer_backend.utils.NonErrorValueMapper.*
 import com.pp.students_organizer_backend.utils.auth.{PasswordUtils, TokenUtils}
 import dev.profunktor.auth.jwt.JwtToken
-import cats.syntax.all.catsSyntaxApplicativeId
 
 trait AuthGateway[F[_]]:
   def login(request: LoginRequest): F[TokenResponse]
@@ -57,5 +56,7 @@ object AuthGateway:
       private def createToken(student: StudentEntity): F[TokenResponse] =
         tokenUtils.createToken
           .flatMap { token =>
-            authService.insertStudentWithToken(student, token) *> TokenResponse(token.value).pure[F]
+            authService.insertStudentWithToken(student, token) *> TokenResponse(
+              token.value
+            ).pure[F]
           }
