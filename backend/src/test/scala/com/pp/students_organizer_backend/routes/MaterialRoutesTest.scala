@@ -9,6 +9,7 @@ import com.pp.students_organizer_backend.gateways.material.MaterialGateway
 import com.pp.students_organizer_backend.routes.MaterialRoutes
 import com.pp.students_organizer_backend.routes_models.material.request.InsertMaterialRequest
 import com.pp.students_organizer_backend.routes_models.material.response.GetMaterialResponse
+import com.pp.students_organizer_backend.test_utils.Fakes
 import com.pp.students_organizer_backend.test_utils.RoutesChecker
 import io.circe.literal.json
 import org.http4s.Method.{DELETE, GET, POST}
@@ -29,7 +30,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
 
   "GET -> /material" should "return all materials" in {
     val studentId = mock[StudentId]
-    val student = fakeStudent(id = studentId)
+    val student = Fakes.fakeStudent(id = studentId)
     val materialResponse = GetMaterialResponse(
       id = UUID.fromString("3efe9e6d-4163-40e5-8ea0-aebe46b502c4"),
       name = "name",
@@ -47,7 +48,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
     when(gateway.getAll(any())) thenReturn IO(List(materialResponse))
 
     val actualResponse =
-      tested(gateway = gateway)(fakeAuthMiddleware(student)).orNotFound
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
         .run(GET(uri"/material"))
 
     RoutesChecker.check(
@@ -60,7 +61,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
 
   "POST -> /material" should "insert new material" in {
     val studentId = mock[StudentId]
-    val student = fakeStudent(id = studentId)
+    val student = Fakes.fakeStudent(id = studentId)
     val jsonRequest =
       json"""{
             "name": "name",
@@ -76,7 +77,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
     when(gateway.insert(any(), any())) thenReturn IO.unit
 
     val actualResponse =
-      tested(gateway = gateway)(fakeAuthMiddleware(student)).orNotFound
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
         .run(POST(jsonRequest, uri"/material"))
         .unsafeRunSync()
 
@@ -89,7 +90,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
 
   "POST -> /material" should "return bad request WHEN validation exception occurs" in {
     val studentId = mock[StudentId]
-    val student = fakeStudent(id = studentId)
+    val student = Fakes.fakeStudent(id = studentId)
     val jsonRequest =
       json"""{
             "name": "name",
@@ -112,7 +113,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
     when(gateway.insert(any(), any())) thenAnswer (* => IO.raiseError(exception))
 
     val actualResponse =
-      tested(gateway = gateway)(fakeAuthMiddleware(student)).orNotFound
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
         .run(POST(jsonRequest, uri"/material"))
 
     RoutesChecker.check(
@@ -125,7 +126,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
 
   "POST -> /material" should "return not found WHEN assignment not found exception occurs" in {
     val studentId = mock[StudentId]
-    val student = fakeStudent(id = studentId)
+    val student = Fakes.fakeStudent(id = studentId)
     val jsonRequest =
       json"""{
             "name": "name",
@@ -147,7 +148,7 @@ class MaterialRoutesTest extends AnyFlatSpec:
     when(gateway.insert(any(), any())) thenAnswer (* => IO.raiseError(exception))
 
     val actualResponse =
-      tested(gateway = gateway)(fakeAuthMiddleware(student)).orNotFound
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
         .run(POST(jsonRequest, uri"/material"))
 
     RoutesChecker.check(
@@ -160,13 +161,13 @@ class MaterialRoutesTest extends AnyFlatSpec:
 
   "DELETE -> /material" should "delete material" in {
     val studentId = mock[StudentId]
-    val student = fakeStudent(id = studentId)
+    val student = Fakes.fakeStudent(id = studentId)
     val materialId = UUID.fromString("3efe9e6d-4163-40e5-8ea0-aebe46b502c4")
 
     when(gateway.remove(any(), any())) thenReturn IO.unit
 
     val actualResponse =
-      tested(gateway = gateway)(fakeAuthMiddleware(student)).orNotFound
+      tested(gateway = gateway)(Fakes.fakeAuthMiddleware(student)).orNotFound
         .run(DELETE(uri"/material/3efe9e6d-4163-40e5-8ea0-aebe46b502c4"))
         .unsafeRunSync()
 
@@ -181,18 +182,3 @@ class MaterialRoutesTest extends AnyFlatSpec:
       gateway: MaterialGateway[IO] = mock
   ): MaterialRoutes[IO] =
     MaterialRoutes(gateway)
-
-  private def fakeAuthMiddleware(
-      student: StudentEntity
-  ): AuthMiddleware[IO, StudentEntity] =
-    AuthMiddleware(Kleisli.pure(student))
-
-  private def fakeStudent(
-      id: StudentId = mock,
-      name: StudentName = mock,
-      password: StudentPassword = mock
-  ) = StudentEntity(
-    id = id,
-    name = name,
-    password = password
-  )
